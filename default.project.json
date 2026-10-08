@@ -1,0 +1,24 @@
+{
+  "name": "BloxelloHub",
+  "servePort": 34872,
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Bloxello": { "$path": "src/shared" },
+      "Packages": { "$path": "Packages" }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "BloxelloServer": { "$path": "src/server" }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "BloxelloClient": { "$path": "src/client" }
+      }
+    }
+  }
+}
+

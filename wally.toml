@@ -1,0 +1,10 @@
+[package]
+name = "bloxello/hub"
+description = "Seller-owned Bloxello Roblox Hub"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Fusion = "elttob/fusion@0.3.0"
+
