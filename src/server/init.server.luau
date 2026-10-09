@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CatalogService = require(script.CatalogService)
 local PurchaseService = require(script.PurchaseService)
+local ApiClient = require(script.ApiClient)
 
 local remotes = Instance.new("Folder")
 remotes.Name = "BloxelloRemotes"
@@ -21,6 +22,9 @@ reportGamePass.OnServerEvent:Connect(function(player, gamePassId)
 end)
 
 PurchaseService.start()
+task.spawn(function()
+	if game.PlaceId > 0 then ApiClient.reportConnection() end
+end)
 task.spawn(function()
 	while task.wait(120) do CatalogService.refresh() end
 end)

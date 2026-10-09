@@ -29,12 +29,21 @@ local rows = {}
 if catalog then
 	for _, product in catalog.store.products do
 		local mapping = product.mappings[1]
+		local displayPrice = if mapping then mapping.robuxPrice else nil
+		if mapping then
+			local assetId = tonumber(mapping.robloxAssetId)
+			local infoType = if mapping.type == "DEVELOPER_PRODUCT" then Enum.InfoType.Product else Enum.InfoType.GamePass
+			local ok, productInfo = pcall(MarketplaceService.GetProductInfoAsync, MarketplaceService, assetId, infoType)
+			if ok and type(productInfo) == "table" and type(productInfo.PriceInRobux) == "number" then
+				displayPrice = productInfo.PriceInRobux
+			end
+		end
 		table.insert(rows, New "TextButton" {
 			Size = UDim2.new(1, -24, 0, 68),
 			BackgroundColor3 = Color3.fromRGB(35, 35, 42),
 			TextColor3 = Color3.new(1, 1, 1),
 			TextXAlignment = Enum.TextXAlignment.Left,
-			Text = `  {if product.id == launchProductId then "▶ " else ""}{product.name}\n  {if mapping then `{utf8.char(0xE002)} {mapping.robuxPrice}` else "Unavailable"}`,
+			Text = `  {if product.id == launchProductId then "▶ " else ""}{product.name}\n  {if displayPrice then `{utf8.char(0xE002)} {displayPrice}` else "Unavailable"}`,
 			[scope.OnEvent "Activated"] = function()
 				if not mapping then return end
 				prompt(mapping)

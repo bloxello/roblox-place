@@ -42,5 +42,24 @@ function ApiClient.reportReceipt(payload)
 	return decodedOk and body.accepted == true, if decodedOk then body else "Invalid receipt response"
 end
 
+function ApiClient.reportConnection()
+	local ok, response = pcall(function()
+		return HttpService:RequestAsync({
+			Url = `{Config.ApiBaseUrl}/roblox/hub/connect`,
+			Method = "POST",
+			Headers = {
+				["Content-Type"] = "application/json",
+				["Authorization"] = `Bearer {Config.HubApiKey}`,
+				["X-Bloxello-Store-Id"] = Config.StoreId,
+			},
+			Body = HttpService:JSONEncode({
+				placeId = tostring(game.PlaceId),
+				universeId = tostring(game.GameId),
+			}),
+		})
+	end)
+	return ok and response.Success
+end
+
 return ApiClient
 
