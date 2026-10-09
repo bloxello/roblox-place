@@ -12,6 +12,10 @@
       "$className": "ServerScriptService",
       "BloxelloServer": { "$path": "src/server" }
     },
+    "Players": {
+      "$className": "Players",
+      "$properties": { "CharacterAutoLoads": false }
+    },
     "StarterPlayer": {
       "$className": "StarterPlayer",
       "StarterPlayerScripts": {

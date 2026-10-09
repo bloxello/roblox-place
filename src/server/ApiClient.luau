@@ -37,6 +37,24 @@ function ApiClient.getImage(kind: string, id: string?)
 	return buffer.fromstring(response.Body), width, height
 end
 
+function ApiClient.getDeliveries(userId: number)
+	local ok, response = pcall(function()
+		return HttpService:RequestAsync({
+			Url = `{Config.ApiBaseUrl}/roblox/deliveries/{userId}`,
+			Method = "GET",
+			Headers = {
+				["Accept"] = "application/json",
+				["Authorization"] = `Bearer {Config.HubApiKey}`,
+				["X-Bloxello-Store-Id"] = Config.StoreId,
+			},
+		})
+	end)
+	if not ok or not response.Success then return nil end
+	local decodedOk, body = pcall(HttpService.JSONDecode, HttpService, response.Body)
+	if not decodedOk or type(body) ~= "table" or type(body.deliveries) ~= "table" then return nil end
+	return body.deliveries
+end
+
 function ApiClient.reportReceipt(payload)
 	local ok, response = pcall(function()
 		return HttpService:RequestAsync({

@@ -8,7 +8,7 @@ local peek = Fusion.peek
 local PurchaseService = {}
 
 function PurchaseService.new(scope, deps)
-	local catalog, prices, toasts, remotes = deps.catalog, deps.prices, deps.toasts, deps.remotes
+	local catalog, prices, toasts, remotes, deliveries = deps.catalog, deps.prices, deps.toasts, deps.remotes, deps.deliveries
 	local localPlayer = Players.LocalPlayer
 	local pending = scope:Value({})
 	local self = { pending = pending }
@@ -49,7 +49,8 @@ function PurchaseService.new(scope, deps)
 		if not entry then return end
 		setPending(entry.id, nil)
 		if purchased then
-			toasts.push("success", `Purchased {entry.name}! It is being delivered to your account.`, 6)
+			toasts.push("success", `Purchased {entry.name}! Find it under "My items".`, 6)
+			deliveries.refreshAfterPurchase(entry.id)
 		end
 	end
 

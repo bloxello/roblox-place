@@ -142,8 +142,14 @@ local function ProductCard(ctx, scope, props)
 end
 
 -- Total card height for a given card width.
-function ProductCard.heightFor(width: number): number
+local function heightFor(width: number): number
 	return math.floor(width / RATIO) + INFO_HEIGHT
 end
 
-return ProductCard
+return setmetatable({
+	heightFor = heightFor,
+}, {
+	__call = function(_, ctx, scope, props)
+		return ProductCard(ctx, scope, props)
+	end,
+})

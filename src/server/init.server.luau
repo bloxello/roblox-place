@@ -1,7 +1,16 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+-- UI-only hub: there is no world, so a spawned character would fall into the void and respawn forever.
+Players.CharacterAutoLoads = false
+for _, player in Players:GetPlayers() do
+	if player.Character then player.Character:Destroy() end
+end
+
 local CatalogService = require(script.CatalogService)
 local PurchaseService = require(script.PurchaseService)
 local WishlistService = require(script.WishlistService)
+local DeliveryService = require(script.DeliveryService)
 local ApiClient = require(script.ApiClient)
 local ImageService = require(script.ImageService)
 
@@ -36,6 +45,13 @@ setWishlist.OnServerEvent:Connect(function(player, ids)
 	WishlistService.set(player, ids)
 end)
 
+local getDeliveries = Instance.new("RemoteFunction")
+getDeliveries.Name = "GetDeliveries"
+getDeliveries.Parent = remotes
+getDeliveries.OnServerInvoke = function(player)
+	return DeliveryService.get(player)
+end
+
 local getImage = Instance.new("RemoteFunction")
 getImage.Name = "GetImage"
 getImage.Parent = remotes
@@ -44,6 +60,7 @@ getImage.OnServerInvoke = function(player, kind, id)
 end
 
 ImageService.start()
+DeliveryService.start()
 WishlistService.start()
 PurchaseService.start()
 task.spawn(function()

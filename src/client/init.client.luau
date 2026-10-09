@@ -3,6 +3,22 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local StarterGui = game:GetService("StarterGui")
+local TextChatService = game:GetService("TextChatService")
+
+-- Hide all default Roblox UI (chat, player list, health, backpack, emotes).
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
+task.spawn(function()
+	for _ = 1, 10 do
+		if pcall(StarterGui.SetCore, StarterGui, "ResetButtonCallback", false) then break end
+		task.wait(0.5)
+	end
+end)
+for _, name in { "ChatWindowConfiguration", "ChatInputBarConfiguration", "BubbleChatConfiguration" } do
+	local config = TextChatService:FindFirstChild(name)
+	if config then config.Enabled = false end
+end
+
 local Core = script.Core
 local Services = script.Services
 local Fusion = require(Core.Fusion)
@@ -18,6 +34,7 @@ local WishlistService = require(Services.WishlistService)
 local PurchaseService = require(Services.PurchaseService)
 local BrowseState = require(Services.BrowseState)
 local ImageService = require(Services.ImageService)
+local DeliveryService = require(Services.DeliveryService)
 
 local App = require(script.Layout.App)
 local Splash = require(script.Layout.Splash)
@@ -49,9 +66,10 @@ Splash(splashScope, nil).Parent = splashGui
 catalog.fetch():await()
 
 local toasts = ToastService.new(scope)
+local deliveries = DeliveryService.new(scope, remotes)
 local modal = ModalService.new(scope)
 local wishlist = WishlistService.new(scope, remotes, toasts)
-local purchase = PurchaseService.new(scope, { catalog = catalog, prices = prices, toasts = toasts, remotes = remotes })
+local purchase = PurchaseService.new(scope, { catalog = catalog, prices = prices, toasts = toasts, remotes = remotes, deliveries = deliveries })
 local browse = BrowseState.new(scope, catalog, prices)
 local router = Router.new(scope, "Home")
 local images = ImageService.new(scope, remotes)
@@ -66,6 +84,7 @@ local ctx = {
 	catalog = catalog,
 	prices = prices,
 	wishlist = wishlist,
+	deliveries = deliveries,
 	purchase = purchase,
 	toasts = toasts,
 	modal = modal,
@@ -101,6 +120,7 @@ root.Parent = gui
 if peek(catalog.status) == "ready" then
 	prices.load(peek(catalog.products))
 	wishlist.load()
+	deliveries.refresh()
 end
 
 splashGui:Destroy()

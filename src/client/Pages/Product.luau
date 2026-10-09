@@ -135,7 +135,7 @@ return function(ctx, scope, params)
 				infoPanel(ctx, inner, "How delivery works", {
 					Label(ctx, inner, {
 						LayoutOrder = 1,
-						Text = "You pay with Robux through Roblox. Your purchase is delivered to your account right after it completes, and you can buy from inside this experience without leaving Roblox.",
+						Text = "Items are Roblox developer assets (game passes and developer products) from creators. Checkout happens in Roblox's official purchase prompt, paid with your own Robux. Everything the creator includes then appears under My items, right here in the experience. Bloxello never asks for your password or sells Robux.",
 						Variant = "caption",
 						Color = theme.textMuted,
 						Wrap = true,

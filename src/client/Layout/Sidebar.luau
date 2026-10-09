@@ -89,7 +89,7 @@ return function(ctx, scope)
 								Position = UDim2.new(0, 56, 0.5, 1),
 							}),
 							Label(ctx, scope, {
-								Text = "Robux Store",
+								Text = "Developer assets hub",
 								Variant = "caption",
 								Color = theme.robux,
 								AnchorPoint = Vector2.new(0, 0),
@@ -128,7 +128,7 @@ return function(ctx, scope)
 								Position = UDim2.fromOffset(52, 2),
 							}),
 							Label(ctx, scope, {
-								Text = "Purchases use Robux",
+								Text = "Paid through Roblox",
 								Variant = "caption",
 								Color = theme.textMuted,
 								Truncate = true,

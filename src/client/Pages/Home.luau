@@ -73,7 +73,7 @@ return function(ctx, scope)
 				UI.list(inner, { Gap = 10 }),
 				Label(ctx, inner, {
 					LayoutOrder = 1,
-					Text = "ROBUX STORE",
+					Text = "BLOXELLO · DEVELOPER ASSETS",
 					Variant = "tiny",
 					Color = theme.onAccent,
 					Transparency = 0.25,
@@ -92,7 +92,7 @@ return function(ctx, scope)
 					Text = inner:Computed(function(use)
 						local text = use(catalog.store).description
 						if text and text ~= "" then return text end
-						return "Browse items you can buy with Robux, right here in the experience."
+						return "Bloxello is a hub for buying Roblox developer assets: game passes and developer products made by creators. Every purchase goes through Roblox's own purchase prompt. Bloxello does not sell or give away Robux."
 					end),
 					Variant = "body",
 					Color = theme.onAccent,
