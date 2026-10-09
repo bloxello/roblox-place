@@ -5,6 +5,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local StarterGui = game:GetService("StarterGui")
 local TextChatService = game:GetService("TextChatService")
+local GuiService = game:GetService("GuiService")
+local UserInputService = game:GetService("UserInputService")
 
 -- Hide all default Roblox UI (chat, player list, health, backpack, emotes).
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
@@ -35,6 +37,7 @@ local PurchaseService = require(Services.PurchaseService)
 local BrowseState = require(Services.BrowseState)
 local ImageService = require(Services.ImageService)
 local DeliveryService = require(Services.DeliveryService)
+local RecentService = require(Services.RecentService)
 
 local App = require(script.Layout.App)
 local Splash = require(script.Layout.Splash)
@@ -59,9 +62,7 @@ end
 local catalog = CatalogService.new(scope, remotes)
 local prices = PriceService.new(scope)
 
-local splashScope = Fusion.scoped(Fusion)
-local splashGui = newGui("BloxelloSplash", 11)
-Splash(splashScope, nil).Parent = splashGui
+local splash = Splash.show(newGui("BloxelloSplash", 11))
 
 catalog.fetch():await()
 
@@ -90,6 +91,7 @@ local ctx = {
 	modal = modal,
 	browse = browse,
 	images = images,
+	recent = RecentService.new(scope),
 	logo = if peek(catalog.store).hasLogo then images.of("logo") else scope:Value(Content.none),
 	banner = if peek(catalog.store).hasBanner then images.of("banner") else scope:Value(Content.none),
 }
@@ -108,6 +110,15 @@ function ctx.reload()
 	end)
 end
 
+-- Keep content below the Roblox top bar (menu button, etc.), which overlaps an inset-ignoring gui.
+local topInset = scope:Value(GuiService.TopbarInset.Height)
+table.insert(
+	scope,
+	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
+		topInset:set(GuiService.TopbarInset.Height)
+	end)
+)
+
 local gui = newGui("BloxelloHub", 10)
 local root = scope:New("Frame")({
 	Name = "Root",
@@ -115,7 +126,14 @@ local root = scope:New("Frame")({
 	BorderSizePixel = 0,
 	Size = UDim2.fromScale(1, 1),
 	[Fusion.Out("AbsoluteSize")] = viewport,
-	[Fusion.Children] = App(ctx, scope),
+	[Fusion.Children] = {
+		scope:New("UIPadding")({
+			PaddingTop = scope:Computed(function(use)
+				return UDim.new(0, use(topInset))
+			end),
+		}),
+		App(ctx, scope),
+	},
 })
 root.Parent = gui
 
@@ -125,8 +143,16 @@ if peek(catalog.status) == "ready" then
 	deliveries.refresh()
 end
 
-splashGui:Destroy()
-splashScope:doCleanup()
+task.spawn(splash.finish)
+
+-- Back shortcut: Escape / Backspace / gamepad B steps back when no modal is open.
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed or peek(modal.current) then return end
+	local key = input.KeyCode
+	if key == Enum.KeyCode.Escape or key == Enum.KeyCode.Backspace or key == Enum.KeyCode.ButtonB then
+		if peek(router.canBack) then router.back() end
+	end
+end)
 
 -- Deep link: a teleport can open a specific product via launch data { productId = "..." }.
 local joinData = Players.LocalPlayer:GetJoinData()

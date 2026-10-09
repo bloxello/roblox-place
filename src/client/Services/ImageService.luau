@@ -13,9 +13,9 @@ function ImageService.new(scope, remotes)
 	local queue = {}
 	local active = 0
 
-	local function build(kind: string, id: string?)
+	local function build(kind: string, id: string?, index: number?)
 		local ok, pixels, width, height = pcall(function()
-			return remotes.GetImage:InvokeServer(kind, id)
+			return remotes.GetImage:InvokeServer(kind, id, index)
 		end)
 		if not ok or typeof(pixels) ~= "buffer" or type(width) ~= "number" or type(height) ~= "number" then
 			return nil
@@ -36,7 +36,7 @@ function ImageService.new(scope, remotes)
 			local job = table.remove(queue, 1)
 			active += 1
 			task.spawn(function()
-				local image = build(job.kind, job.id)
+				local image = build(job.kind, job.id, job.index)
 				if image then
 					table.insert(images, image)
 					job.state:set(Content.fromObject(image))
@@ -48,15 +48,15 @@ function ImageService.new(scope, remotes)
 	end
 
 	-- Returns a state holding Content.none until the pixels arrive (and forever if they never do).
-	function self.of(kind: string, id: string?)
-		local key = `{kind}:{id or ""}`
+	function self.of(kind: string, id: string?, index: number?)
+		local key = `{kind}:{id or ""}:{index or ""}`
 		local state = states[key]
 		if state then
 			return state
 		end
 		state = scope:Value(Content.none)
 		states[key] = state
-		table.insert(queue, { kind = kind, id = id, key = key, state = state })
+		table.insert(queue, { kind = kind, id = id, index = index, key = key, state = state })
 		pump()
 		return state
 	end
@@ -66,6 +66,14 @@ function ImageService.new(scope, remotes)
 			return nil
 		end
 		return self.of("product", entry.id)
+	end
+
+	-- index is 1-based here; the wire format is 0-based.
+	function self.gallery(entry, index: number)
+		if index < 1 or index > entry.galleryCount then
+			return nil
+		end
+		return self.of("gallery", entry.id, index - 1)
 	end
 
 	table.insert(scope, function()

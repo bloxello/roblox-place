@@ -56,7 +56,7 @@ local function allowed(player: Player)
 end
 
 -- Only images that belong to the configured store's catalog are ever requested.
-local function exists(kind: string, id: string?)
+local function exists(kind: string, id: string?, index: number?)
 	local catalog = CatalogService.get()
 	local store = catalog and catalog.store
 	if not store then
@@ -68,26 +68,35 @@ local function exists(kind: string, id: string?)
 	if kind == "banner" then
 		return store.bannerUrl ~= nil
 	end
-	if kind ~= "product" or type(id) ~= "string" then
+	if (kind ~= "product" and kind ~= "gallery") or type(id) ~= "string" then
 		return false
 	end
 	for _, product in store.products do
 		if product.id == id then
+			if kind == "gallery" then
+				return index ~= nil and index >= 0 and index < (product.galleryCount or 0)
+			end
 			return product.hasImage == true
 		end
 	end
 	return false
 end
 
-function ImageService.get(player: Player, kind: any, id: any)
+function ImageService.get(player: Player, kind: any, id: any, index: any)
 	if type(kind) ~= "string" or (id ~= nil and (type(id) ~= "string" or #id > 60)) then
 		return nil
 	end
-	if not allowed(player) or not exists(kind, id) then
+	if index ~= nil and (type(index) ~= "number" or index % 1 ~= 0 or index < 0 or index > 7) then
+		return nil
+	end
+	if kind == "gallery" and index == nil then
+		return nil
+	end
+	if not allowed(player) or not exists(kind, id, index) then
 		return nil
 	end
 
-	local key = `{kind}:{id or ""}`
+	local key = `{kind}:{id or ""}:{index or ""}`
 	local hit = cache[key]
 	if hit then
 		return hit.pixels, hit.width, hit.height
@@ -108,7 +117,7 @@ function ImageService.get(player: Player, kind: any, id: any)
 
 	inflight[key] = {}
 	acquire()
-	local pixels, width, height = ApiClient.getImage(kind, id)
+	local pixels, width, height = ApiClient.getImage(kind, id, index)
 	release()
 	if pixels then
 		remember(key, { pixels = pixels, width = width, height = height })

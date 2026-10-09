@@ -33,15 +33,19 @@ local function normalize(raw)
 				id = product.id,
 				name = product.name,
 				summary = product.summary or "",
-				description = product.description,
 				createdAt = Util.parseIso(product.createdAt) or 0,
 				popularity = if product._count then product._count.favorites or 0 else 0,
+				rating = {
+					average = if product.rating then product.rating.average or 0 else 0,
+					count = if product.rating then product.rating.count or 0 else 0,
+				},
 				categories = categories,
 				kind = kind,
 				assetId = assetId,
 				robux = mapping.robuxPrice,
 				image = Util.robloxImage(product.thumbnailUrl),
 				hasImage = product.hasImage == true,
+				galleryCount = product.galleryCount or 0,
 				searchText = string.lower(`{product.name} {product.summary or ""} {table.concat(names, " ")}`),
 				order = index,
 			}
@@ -95,6 +99,31 @@ function CatalogService.new(scope, remotes)
 
 	function self.findByAsset(kind: string, assetId: number)
 		return lookup.byAsset[`{kind}:{assetId}`]
+	end
+
+	-- Filtered description and read-only reviews for a product (cached per session; failures are not cached).
+	local detailsCache = {}
+	function self.details(id: string)
+		local cached = detailsCache[id]
+		if cached then
+			return Promise.resolve(cached)
+		end
+		return Promise.new(function(resolve, reject)
+			local ok, details = pcall(function()
+				return remotes.GetProductDetails:InvokeServer(id)
+			end)
+			if ok and type(details) == "table" then
+				if details.reviews then
+					for _, review in details.reviews.items do
+						review.createdAt = Util.parseIso(review.createdAt)
+					end
+				end
+				detailsCache[id] = details
+				resolve(details)
+			else
+				reject("Details unavailable")
+			end
+		end)
 	end
 
 	function self.fetch()

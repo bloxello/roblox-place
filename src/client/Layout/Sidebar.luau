@@ -9,6 +9,7 @@ local RemoteImage = require(Components.RemoteImage)
 local NavItem = require(Components.NavItem)
 local Avatar = require(Components.Avatar)
 local Nav = require(script.Parent.Nav)
+local Splash = require(script.Parent.Splash)
 local Players = game:GetService("Players")
 
 return function(ctx, scope)
@@ -122,6 +123,18 @@ return function(ctx, scope)
 							items,
 						},
 					}),
+					if Splash.wordmark()
+						then scope:New("ImageLabel")({
+							Name = "Wordmark",
+							BackgroundTransparency = 1,
+							Image = Splash.wordmark(),
+							ScaleType = Enum.ScaleType.Fit,
+							ImageTransparency = 0.25,
+							AnchorPoint = Vector2.new(0.5, 1),
+							Position = UDim2.new(0.5, 0, 1, -78),
+							Size = UDim2.new(1, -24, 0, 22),
+						})
+						else nil,
 					scope:New("Frame")({
 						Name = "Footer",
 						BackgroundColor3 = theme.surface,

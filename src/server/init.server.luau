@@ -13,6 +13,7 @@ local WishlistService = require(script.WishlistService)
 local DeliveryService = require(script.DeliveryService)
 local ApiClient = require(script.ApiClient)
 local ImageService = require(script.ImageService)
+local StoreView = require(script.StoreView)
 
 local remotes = Instance.new("Folder")
 remotes.Name = "BloxelloRemotes"
@@ -20,9 +21,18 @@ remotes.Parent = ReplicatedStorage
 local getCatalog = Instance.new("RemoteFunction")
 getCatalog.Name = "GetCatalog"
 getCatalog.Parent = remotes
-getCatalog.OnServerInvoke = function()
+getCatalog.OnServerInvoke = function(player)
 	local catalog, catalogError = CatalogService.get()
-	return catalog, catalogError
+	if not catalog then
+		return nil, catalogError
+	end
+	return StoreView.catalog(player, catalog)
+end
+local getProductDetails = Instance.new("RemoteFunction")
+getProductDetails.Name = "GetProductDetails"
+getProductDetails.Parent = remotes
+getProductDetails.OnServerInvoke = function(player, productId)
+	return StoreView.details(player, productId)
 end
 local reportGamePass = Instance.new("RemoteEvent")
 reportGamePass.Name = "ReportGamePass"
@@ -57,9 +67,11 @@ end
 local getImage = Instance.new("RemoteFunction")
 getImage.Name = "GetImage"
 getImage.Parent = remotes
-getImage.OnServerInvoke = function(player, kind, id)
-	return ImageService.get(player, kind, id)
+getImage.OnServerInvoke = function(player, kind, id, index)
+	return ImageService.get(player, kind, id, index)
 end
+
+StoreView.start()
 
 ImageService.start()
 DeliveryService.start()

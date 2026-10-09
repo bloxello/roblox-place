@@ -1,4 +1,5 @@
 local Fusion = require(script.Parent.Parent.Core.Fusion)
+local Sfx = require(script.Parent.Parent.Core.Sfx)
 local peek = Fusion.peek
 
 local MAX_VISIBLE = 4
@@ -29,6 +30,7 @@ function ToastService.new(scope)
 			table.remove(updated, 1)
 		end
 		items:set(updated)
+		Sfx.play(if kind == "error" then "alert" else "notify")
 		return nextId
 	end
 

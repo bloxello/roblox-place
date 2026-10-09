@@ -1,6 +1,5 @@
 local Core = script.Parent.Parent.Core
 local Fusion = require(Core.Fusion)
-local Theme = require(Core.Theme)
 local Icons = require(Core.Icons)
 local UI = require(Core.UI)
 local Util = require(Core.Util)
@@ -17,13 +16,17 @@ local AsyncBoundary = require(Components.AsyncBoundary)
 
 local Badge = require(Components.Badge)
 local Price = require(Components.Price)
-local Thumbnail = require(Components.Thumbnail)
+local Gallery = require(Components.Gallery)
+local Rating = require(Components.Rating)
+local Reviews = require(Components.Reviews)
+local Skeleton = require(Components.Skeleton)
 local SaveButton = require(Components.SaveButton)
 local BuyButton = require(Components.BuyButton)
 local InfoRow = require(Components.InfoRow)
 
-local function infoPanel(ctx, scope, title: string, children)
+local function infoPanel(ctx, scope, order: number, title: string, children)
 	return Panel(ctx, scope, {
+		LayoutOrder = order,
 		Padding = 18,
 		List = { Gap = 8 },
 		Children = {
@@ -51,6 +54,48 @@ return function(ctx, scope, params)
 		end
 
 		local price = ctx.prices.priceOf(inner, product)
+		ctx.recent.add(product.id)
+
+		-- Description and reviews are filtered by the server and fetched separately from the catalog.
+		local details = inner:Value({ status = "loading" })
+		local alive = true
+		table.insert(inner, function()
+			alive = false
+		end)
+		ctx.catalog
+			.details(product.id)
+			:andThen(function(data)
+				if alive then
+					details:set({ status = "ready", data = data })
+				end
+			end)
+			:catch(function()
+				if alive then
+					details:set({ status = "error" })
+				end
+			end)
+
+		local description = inner:Computed(function(use, cell)
+			local state = use(details)
+			if state.status == "loading" then
+				return {
+					Skeleton(ctx, cell, { LayoutOrder = 1, Size = UDim2.new(1, 0, 0, 14) }),
+					Skeleton(ctx, cell, { LayoutOrder = 2, Size = UDim2.new(0.8, 0, 0, 14) }),
+				}
+			end
+			local data = state.data
+			local text = if data and data.description ~= "" then data.description else nil
+			return Label(ctx, cell, {
+				LayoutOrder = 1,
+				Text = text or (if state.status == "error" or (data and data.descriptionWithheld)
+					then "The description is unavailable right now."
+					else "The seller has not added a description."),
+				Variant = "body",
+				Color = if text then theme.textMuted else theme.textFaint,
+				Wrap = true,
+			})
+		end)
+
 		local badges = {
 			Badge(ctx, inner, {
 				LayoutOrder = 0,
@@ -87,7 +132,7 @@ return function(ctx, scope, params)
 			return out
 		end)
 
-		local details = inner:New("Frame")({
+		local detailsColumn = inner:New("Frame")({
 			Name = "Details",
 			LayoutOrder = 2,
 			BackgroundTransparency = 1,
@@ -103,9 +148,16 @@ return function(ctx, scope, params)
 					[Children] = { UI.list(inner, { Direction = "Horizontal", Gap = 6, Wrap = true }), badges },
 				}),
 				Label(ctx, inner, { LayoutOrder = 2, Text = product.name, Variant = "display", Wrap = true }),
-				Price(ctx, inner, { LayoutOrder = 3, Amount = price, Size = "xl" }),
+				Rating(ctx, inner, {
+					LayoutOrder = 3,
+					Average = product.rating.average,
+					Count = product.rating.count,
+					EmptyText = "No reviews yet",
+					Variant = "body",
+				}),
+				Price(ctx, inner, { LayoutOrder = 4, Amount = price, Size = "xl" }),
 				inner:New("Frame")({
-					LayoutOrder = 4,
+					LayoutOrder = 5,
 					BackgroundTransparency = 1,
 					Size = UDim2.new(1, 0, 0, 48),
 					[Children] = {
@@ -118,18 +170,8 @@ return function(ctx, scope, params)
 						),
 					},
 				}),
-				infoPanel(ctx, inner, "About this item", {
-					Label(ctx, inner, {
-						LayoutOrder = 1,
-						Text = if product.description ~= ""
-							then product.description
-							else "The seller has not added a description.",
-						Variant = "body",
-						Color = theme.textMuted,
-						Wrap = true,
-					}),
-				}),
-				infoPanel(ctx, inner, "Details", {
+				infoPanel(ctx, inner, 6, "About this item", { description }),
+								infoPanel(ctx, inner, 7, "Details", {
 					InfoRow(ctx, inner, {
 						LayoutOrder = 1,
 						Label = "Type",
@@ -142,7 +184,7 @@ return function(ctx, scope, params)
 						Value = `{Util.compact(product.popularity)} {Util.plural(product.popularity, "player")}`,
 					}),
 				}),
-				infoPanel(ctx, inner, "How delivery works", {
+				infoPanel(ctx, inner, 8, "How delivery works", {
 					Label(ctx, inner, {
 						LayoutOrder = 1,
 						Text = "Items are Roblox developer assets (game passes and developer products) from creators. Checkout happens in Roblox's official purchase prompt, paid with your own Robux. Everything you buy is listed under My items, right here in the experience. Bloxello never asks for your password or sells Robux.",
@@ -159,10 +201,10 @@ return function(ctx, scope, params)
 			LayoutOrder = 1,
 			BackgroundTransparency = 1,
 			Size = UDim2.fromScale(1, 0),
+			AutomaticSize = Enum.AutomaticSize.Y,
 			[Children] = {
-				UI.aspect(inner, 1),
-				UI.maxWidth(inner, 440),
-				Thumbnail(ctx, inner, { Product = product, Size = UDim2.fromScale(1, 1), Radius = Theme.radius.xl }),
+				UI.maxWidth(inner, 960),
+				Gallery(ctx, inner, { Product = product }),
 			},
 		})
 
@@ -171,7 +213,7 @@ return function(ctx, scope, params)
 				return {
 					UI.list(cell, { Gap = 18, HAlign = Enum.HorizontalAlignment.Center }),
 					media,
-					details,
+					detailsColumn,
 				}
 			end
 			return {
@@ -179,16 +221,16 @@ return function(ctx, scope, params)
 				cell:New("Frame")({
 					LayoutOrder = 1,
 					BackgroundTransparency = 1,
-					Size = UDim2.new(0.42, -14, 0, 0),
+					Size = UDim2.new(0.5, -14, 0, 0),
 					AutomaticSize = Enum.AutomaticSize.Y,
 					[Children] = { UI.list(cell, { HAlign = Enum.HorizontalAlignment.Center }), media },
 				}),
 				cell:New("Frame")({
 					LayoutOrder = 2,
 					BackgroundTransparency = 1,
-					Size = UDim2.new(0.58, -14, 0, 0),
+					Size = UDim2.new(0.5, -14, 0, 0),
 					AutomaticSize = Enum.AutomaticSize.Y,
-					[Children] = { UI.list(cell, {}), details },
+					[Children] = { UI.list(cell, {}), detailsColumn },
 				}),
 			}
 		end)
@@ -202,9 +244,10 @@ return function(ctx, scope, params)
 				AutomaticSize = Enum.AutomaticSize.Y,
 				[Children] = top,
 			}),
+			Reviews(ctx, inner, { LayoutOrder = 2, Details = details }),
 			inner:New("Frame")({
 				Name = "Related",
-				LayoutOrder = 2,
+				LayoutOrder = 3,
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 0),
 				AutomaticSize = Enum.AutomaticSize.Y,

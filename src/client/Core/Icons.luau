@@ -5,6 +5,8 @@ return {
 	heart = "\u{2665}",
 	heartOutline = "\u{2661}",
 	star = "\u{2605}",
+	starOutline = "\u{2606}",
+	next = "\u{203A}",
 	search = "\u{2315}",
 	home = "\u{2302}",
 	browse = "\u{25A6}",

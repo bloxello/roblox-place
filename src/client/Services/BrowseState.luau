@@ -8,6 +8,7 @@ local BrowseState = {}
 BrowseState.sorts = {
 	{ id = "featured", label = "Featured" },
 	{ id = "popular", label = "Most saved" },
+	{ id = "rating", label = "Top rated" },
 	{ id = "newest", label = "Newest" },
 	{ id = "priceAsc", label = "Price: low to high" },
 	{ id = "priceDesc", label = "Price: high to low" },
@@ -68,6 +69,15 @@ function BrowseState.new(scope, catalog, prices)
 		table.sort(list, function(a, b)
 			if mode == "popular" and a.popularity ~= b.popularity then
 				return a.popularity > b.popularity
+			end
+			if mode == "rating" then
+				-- Bayesian-style average so one 5-star review doesn't beat a well-reviewed item.
+				local function score(entry)
+					return (entry.rating.average * entry.rating.count + 3 * 3) / (entry.rating.count + 3)
+				end
+				if score(a) ~= score(b) then
+					return score(a) > score(b)
+				end
 			end
 			if mode == "newest" and a.createdAt ~= b.createdAt then
 				return a.createdAt > b.createdAt

@@ -1,5 +1,6 @@
 -- A single modal slot: open({ title, body, confirmText, cancelText, onConfirm, tone }).
 local Fusion = require(script.Parent.Parent.Core.Fusion)
+local Sfx = require(script.Parent.Parent.Core.Sfx)
 local peek = Fusion.peek
 
 local ModalService = {}
@@ -10,6 +11,7 @@ function ModalService.new(scope)
 
 	function self.open(spec)
 		current:set(spec)
+		Sfx.play(if spec and spec.tone == "danger" then "alert" else "pop")
 	end
 
 	function self.close()

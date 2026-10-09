@@ -8,6 +8,7 @@ local Label = require(script.Parent.Label)
 local Price = require(script.Parent.Price)
 local Badge = require(script.Parent.Badge)
 local Thumbnail = require(script.Parent.Thumbnail)
+local Rating = require(script.Parent.Rating)
 local SaveButton = require(script.Parent.SaveButton)
 local BuyButton = require(script.Parent.BuyButton)
 
@@ -86,6 +87,14 @@ local function ProductCard(ctx, scope, props)
 							{ Text = "GAME PASS", Kind = "accent", Position = UDim2.fromOffset(8, 8), ZIndex = 5 }
 						)
 						else nil,
+					Badge(ctx, scope, {
+						Text = "OWNED",
+						Kind = "success",
+						AnchorPoint = Vector2.new(0, 1),
+						Position = UDim2.new(0, 8, 1, -8),
+						Visible = ctx.prices.isOwned(scope, product),
+						ZIndex = 5,
+					}),
 				},
 			}),
 			scope:New("Frame")({
@@ -96,13 +105,26 @@ local function ProductCard(ctx, scope, props)
 				[Children] = {
 					UI.padding(scope, 12),
 					UI.list(scope, { Gap = 6 }),
-					Label(ctx, scope, {
+					scope:New("Frame")({
+						Name = "Meta",
 						LayoutOrder = 1,
-						Text = if category then string.upper(category.name) else "ITEM",
-						Variant = "tiny",
-						Color = theme.accent,
+						BackgroundTransparency = 1,
 						Size = UDim2.new(1, 0, 0, 14),
-						Truncate = true,
+						[Children] = {
+							Label(ctx, scope, {
+								Text = if category then string.upper(category.name) else "ITEM",
+								Variant = "tiny",
+								Color = theme.accent,
+								Size = UDim2.new(1, if product.rating.count > 0 then -64 else 0, 1, 0),
+								Truncate = true,
+							}),
+							Rating(ctx, scope, {
+								AnchorPoint = Vector2.new(1, 0.5),
+								Position = UDim2.fromScale(1, 0.5),
+								Average = product.rating.average,
+								Count = product.rating.count,
+							}),
+						},
 					}),
 					Label(ctx, scope, {
 						LayoutOrder = 2,

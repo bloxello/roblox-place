@@ -27,6 +27,7 @@ return function(ctx, scope, props)
 		Position = props.Position,
 		AnchorPoint = props.AnchorPoint,
 		ZIndex = props.ZIndex,
+		Visible = props.Visible,
 		[Children] = { UI.corner(scope, Theme.radius.full), UI.padding(scope, 0, 9) },
 	})
 end

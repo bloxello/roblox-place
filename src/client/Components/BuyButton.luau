@@ -1,6 +1,7 @@
 local Core = script.Parent.Parent.Core
 local Fusion = require(Core.Fusion)
 local Icons = require(Core.Icons)
+local Sfx = require(Core.Sfx)
 -- Robux purchase button that reflects owned / pending state. props: Product, Size, Fill
 local Button = require(script.Parent.Button)
 local Badge = require(script.Parent.Badge)
@@ -25,6 +26,7 @@ return function(ctx, scope, props)
 			Loading = pending,
 			LayoutOrder = props.LayoutOrder,
 			OnClick = function()
+				Sfx.play("purchase")
 				ctx.purchase.buy(product)
 			end,
 		})

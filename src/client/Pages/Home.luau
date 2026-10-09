@@ -29,7 +29,7 @@ local function section(ctx, scope, props)
 			SectionHeader(ctx, scope, {
 				Title = props.Title,
 				Subtitle = props.Subtitle,
-				ActionText = "See all",
+				ActionText = props.ActionText or "See all",
 				OnAction = props.OnAction,
 			}),
 			props.Body,
@@ -157,7 +157,7 @@ return function(ctx, scope)
 
 		local categories = section(ctx, inner, {
 			Name = "Categories",
-			LayoutOrder = 2,
+			LayoutOrder = 3,
 			Title = "Shop by category",
 			Subtitle = "Jump straight to what you need",
 			OnAction = function()
@@ -190,24 +190,91 @@ return function(ctx, scope)
 			end
 		end
 
+		local recent = inner:Computed(function(use)
+			local out = {}
+			for _, id in use(ctx.recent.ids) do
+				local product = catalog.find(id)
+				if product and #out < 4 then table.insert(out, product) end
+			end
+			return out
+		end)
+		local topRated = inner:Computed(function(use)
+			local list = {}
+			for _, product in use(catalog.products) do
+				if product.rating.count > 0 then table.insert(list, product) end
+			end
+			table.sort(list, function(a, b)
+				if a.rating.average ~= b.rating.average then return a.rating.average > b.rating.average end
+				return a.rating.count > b.rating.count
+			end)
+			return { table.unpack(list, 1, math.min(4, #list)) }
+		end)
+		local budget = inner:Computed(function(use)
+			local live = use(ctx.prices.prices)
+			local function priceOf(product)
+				return live[product.id] or product.robux
+			end
+			local list = {}
+			for _, product in use(catalog.products) do
+				if priceOf(product) <= 100 then table.insert(list, product) end
+			end
+			table.sort(list, function(a, b)
+				return priceOf(a) < priceOf(b)
+			end)
+			return { table.unpack(list, 1, math.min(4, #list)) }
+		end)
+
+		-- Renders a section only while it has items.
+		local function optional(items, props)
+			return inner:Computed(function(use, cell)
+				if #use(items) == 0 then return nil end
+				props.Body = ProductGrid(ctx, cell, { Items = items })
+				return section(ctx, cell, props)
+			end)
+		end
+
 		return {
 			hero,
+			optional(recent, {
+				Name = "Recent",
+				LayoutOrder = 2,
+				Title = "Recently viewed",
+				Subtitle = "Pick up where you left off",
+				OnAction = function()
+					ctx.recent.clear()
+				end,
+				ActionText = "Clear",
+			}),
 			categories,
 			section(ctx, inner, {
 				Name = "Popular",
-				LayoutOrder = 3,
+				LayoutOrder = 4,
 				Title = "Most saved",
 				Subtitle = "What other players keep coming back to",
 				OnAction = toBrowse("popular"),
 				Body = ProductGrid(ctx, inner, { Items = popular }),
 			}),
+			optional(topRated, {
+				Name = "TopRated",
+				LayoutOrder = 5,
+				Title = "Top rated",
+				Subtitle = "Loved by the players who bought them",
+				OnAction = toBrowse("rating"),
+			}),
 			section(ctx, inner, {
 				Name = "New",
-				LayoutOrder = 4,
+				LayoutOrder = 6,
 				Title = "New arrivals",
 				Subtitle = "Fresh in the store",
 				OnAction = toBrowse("newest"),
 				Body = ProductGrid(ctx, inner, { Items = newest }),
+			}),
+			optional(budget, {
+				Name = "Budget",
+				LayoutOrder = 7,
+				Title = "Budget picks",
+				Subtitle = "Great items for 100 Robux or less",
+				OnAction = toBrowse("priceAsc"),
 			}),
 		}
 	end

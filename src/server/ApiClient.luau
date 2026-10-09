@@ -22,11 +22,12 @@ function ApiClient.getCatalog()
 end
 
 -- Returns raw RGBA pixels (cover-cropped by the API) as a buffer plus its dimensions.
-function ApiClient.getImage(kind: string, id: string?)
+function ApiClient.getImage(kind: string, id: string?, index: number?)
 	local suffix = if id then `/{HttpService:UrlEncode(id)}` else ""
+	local query = if index then `?i={index}` else ""
 	local ok, response = pcall(function()
 		return HttpService:RequestAsync({
-			Url = `{Config.ApiBaseUrl}/roblox/stores/{Config.StoreId}/image/{kind}{suffix}`,
+			Url = `{Config.ApiBaseUrl}/roblox/stores/{Config.StoreId}/image/{kind}{suffix}{query}`,
 			Method = "GET",
 		})
 	end)
@@ -39,6 +40,25 @@ function ApiClient.getImage(kind: string, id: string?)
 		return nil
 	end
 	return buffer.fromstring(response.Body), width, height
+end
+
+-- Raw (unfiltered) rating summary and latest reviews for one product.
+function ApiClient.getReviews(productId: string)
+	local ok, response = pcall(function()
+		return HttpService:RequestAsync({
+			Url = `{Config.ApiBaseUrl}/roblox/stores/{Config.StoreId}/products/{HttpService:UrlEncode(productId)}/reviews`,
+			Method = "GET",
+			Headers = { ["Accept"] = "application/json" },
+		})
+	end)
+	if not ok or not response.Success then
+		return nil
+	end
+	local decodedOk, body = pcall(HttpService.JSONDecode, HttpService, response.Body)
+	if not decodedOk or type(body) ~= "table" or type(body.summary) ~= "table" or type(body.reviews) ~= "table" then
+		return nil
+	end
+	return body
 end
 
 function ApiClient.getDeliveries(userId: number)

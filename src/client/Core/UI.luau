@@ -2,6 +2,7 @@
 local Core = script.Parent
 local Fusion = require(Core.Fusion)
 local Util = require(Core.Util)
+local Sfx = require(Core.Sfx)
 local OnEvent = Fusion.OnEvent
 
 local UI = {}
@@ -67,6 +68,7 @@ function UI.interact(scope)
 	local events = {
 		[OnEvent("MouseEnter")] = function()
 			hovering:set(true)
+			Sfx.play("hover")
 		end,
 		[OnEvent("MouseLeave")] = function()
 			hovering:set(false)
@@ -74,6 +76,7 @@ function UI.interact(scope)
 		end,
 		[OnEvent("MouseButton1Down")] = function()
 			pressed:set(true)
+			Sfx.play("click")
 		end,
 		[OnEvent("MouseButton1Up")] = function()
 			pressed:set(false)

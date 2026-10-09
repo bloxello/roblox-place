@@ -2,6 +2,7 @@
 local Core = script.Parent.Parent.Core
 local Fusion = require(Core.Fusion)
 local Promise = require(Core.Promise)
+local Sfx = require(Core.Sfx)
 local peek = Fusion.peek
 
 local SAVE_DELAY = 1
@@ -69,6 +70,7 @@ function WishlistService.new(scope, remotes, toasts)
 		local updated = table.clone(peek(set))
 		if updated[entry.id] then
 			updated[entry.id] = nil
+			Sfx.play("trash")
 			toasts.push("info", `Removed {entry.name} from saved`, 2.5)
 		else
 			updated[entry.id] = true

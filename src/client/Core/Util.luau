@@ -110,6 +110,12 @@ function Util.hueFor(text: string): number
 	return sum / 360
 end
 
+-- Five-glyph star string for a 0-5 rating (rounded to the nearest whole star).
+function Util.stars(rating: number): string
+	local filled = math.clamp(math.floor(rating + 0.5), 0, 5)
+	return string.rep("\u{2605}", filled) .. string.rep("\u{2606}", 5 - filled)
+end
+
 function Util.firstLetter(text: string): string
 	local letter = string.match(text, "%w")
 	return if letter then string.upper(letter) else "?"

@@ -1,10 +1,12 @@
 local Core = script.Parent.Parent.Core
 local Fusion = require(Core.Fusion)
 local UI = require(Core.UI)
+local Sfx = require(Core.Sfx)
 local Children, Out = Fusion.Children, Fusion.Out
 -- Fade/slide-in wrapper that every page returns. props: Children
 return function(ctx, scope, props)
 	local shown = UI.appear(scope)
+	Sfx.play("appear")
 	local info = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 	return scope:New("CanvasGroup")({
 		Name = props.Name or "Page",
