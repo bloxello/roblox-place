@@ -14,10 +14,12 @@ return function(ctx, scope, props)
 	local hue = Util.hueFor(category.slug)
 	local top = Color3.fromHSV(hue, 0.55, 0.38)
 	local bottom = Color3.fromHSV((hue + 0.1) % 1, 0.6, 0.2)
-	events[OnEvent "Activated"] = function()
-		if props.OnClick then props.OnClick() end
+	events[OnEvent("Activated")] = function()
+		if props.OnClick then
+			props.OnClick()
+		end
 	end
-	return scope:New "TextButton"(UI.merge(events, {
+	return scope:New("TextButton")(UI.merge(events, {
 		Name = "CategoryTile",
 		AutoButtonColor = false,
 		Text = "",
@@ -29,7 +31,7 @@ return function(ctx, scope, props)
 			UI.corner(scope, Theme.radius.lg),
 			UI.gradient(scope, top, bottom, 120),
 			UI.padding(scope, 16),
-			scope:New "UIStroke" {
+			scope:New("UIStroke")({
 				Thickness = 1.5,
 				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 				Color = theme.accent,
@@ -40,8 +42,8 @@ return function(ctx, scope, props)
 					45,
 					1
 				),
-			},
-			scope:New "UIScale" {
+			}),
+			scope:New("UIScale")({
 				Scale = scope:Spring(
 					scope:Computed(function(use)
 						return if use(pressed) then 0.97 else 1
@@ -49,7 +51,7 @@ return function(ctx, scope, props)
 					45,
 					0.8
 				),
-			},
+			}),
 			Label(ctx, scope, {
 				Text = Util.firstLetter(category.name),
 				TextSize = 54,

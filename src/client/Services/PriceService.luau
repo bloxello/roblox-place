@@ -24,11 +24,15 @@ function PriceService.new(scope)
 	end
 
 	function self.refreshOwned(entry)
-		if entry.kind ~= "pass" then return end
+		if entry.kind ~= "pass" then
+			return
+		end
 		local ok, result = pcall(function()
 			return MarketplaceService:UserOwnsGamePassAsync(localPlayer.UserId, entry.assetId)
 		end)
-		if ok and result then patch(owned, entry.id, true) end
+		if ok and result then
+			patch(owned, entry.id, true)
+		end
 	end
 
 	function self.markOwned(entry)
@@ -41,11 +45,15 @@ function PriceService.new(scope)
 			return MarketplaceService:GetProductInfoAsync(entry.assetId, infoType)
 		end)
 		if ok and type(info) == "table" then
-			if type(info.PriceInRobux) == "number" then patch(prices, entry.id, info.PriceInRobux) end
+			if type(info.PriceInRobux) == "number" then
+				patch(prices, entry.id, info.PriceInRobux)
+			end
 			if type(info.IconImageAssetId) == "number" and info.IconImageAssetId > 0 then
 				patch(icons, entry.id, `rbxassetid://{info.IconImageAssetId}`)
 			end
-			if info.IsForSale == false then patch(forSale, entry.id, false) end
+			if info.IsForSale == false then
+				patch(forSale, entry.id, false)
+			end
 		end
 		self.refreshOwned(entry)
 	end
@@ -62,7 +70,9 @@ function PriceService.new(scope)
 				while true do
 					cursor += 1
 					local entry = entries[cursor]
-					if not entry then return end
+					if not entry then
+						return
+					end
 					resolve(entry)
 				end
 			end)

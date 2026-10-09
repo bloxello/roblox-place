@@ -11,7 +11,7 @@ return function(ctx, scope, props)
 	local theme = ctx.theme
 	local spec = props.Spec
 	local shown = UI.appear(scope)
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "Dialog",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
@@ -24,8 +24,8 @@ return function(ctx, scope, props)
 			UI.stroke(scope, theme.border, 1),
 			UI.padding(scope, 22),
 			UI.list(scope, { Gap = 12 }),
-			scope:New "UISizeConstraint" { MaxSize = Vector2.new(440, math.huge) },
-			scope:New "UIScale" {
+			scope:New("UISizeConstraint")({ MaxSize = Vector2.new(440, math.huge) }),
+			scope:New("UIScale")({
 				Scale = scope:Spring(
 					scope:Computed(function(use)
 						return if use(shown) then 1 else 0.92
@@ -33,10 +33,14 @@ return function(ctx, scope, props)
 					50,
 					0.8
 				),
-			},
+			}),
 			Label(ctx, scope, { LayoutOrder = 1, Text = spec.title, Variant = "heading", Wrap = true }),
-			Label(ctx, scope, { LayoutOrder = 2, Text = spec.body, Variant = "body", Color = theme.textMuted, Wrap = true }),
-			scope:New "Frame" {
+			Label(
+				ctx,
+				scope,
+				{ LayoutOrder = 2, Text = spec.body, Variant = "body", Color = theme.textMuted, Wrap = true }
+			),
+			scope:New("Frame")({
 				LayoutOrder = 3,
 				BackgroundTransparency = 1,
 				Size = UDim2.new(1, 0, 0, 44),
@@ -66,7 +70,7 @@ return function(ctx, scope, props)
 						})
 						else nil,
 				},
-			},
+			}),
 		},
-	}
+	})
 end

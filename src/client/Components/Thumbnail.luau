@@ -16,7 +16,7 @@ return function(ctx, scope, props)
 	local image = ctx.prices.iconOf(scope, product)
 	local content = ctx.images.product(product)
 
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = props.Name or "Thumbnail",
 		BackgroundColor3 = top,
 		BorderSizePixel = 0,
@@ -30,7 +30,7 @@ return function(ctx, scope, props)
 			UI.corner(scope, props.Radius or Theme.radius.md),
 			UI.gradient(scope, top, bottom, 135),
 			if props.Ratio then UI.aspect(scope, props.Ratio) else nil,
-			scope:New "TextLabel" {
+			scope:New("TextLabel")({
 				Name = "Initial",
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 1),
@@ -39,23 +39,22 @@ return function(ctx, scope, props)
 				TextScaled = true,
 				TextColor3 = Color3.new(1, 1, 1),
 				TextTransparency = 0.7,
-				[Children] = scope:New "UIPadding" {
+				[Children] = scope:New("UIPadding")({
 					PaddingTop = UDim.new(0.18, 0),
 					PaddingBottom = UDim.new(0.18, 0),
 					PaddingLeft = UDim.new(0.18, 0),
 					PaddingRight = UDim.new(0.18, 0),
-				},
-			},
-			scope:New "ImageLabel" {
+				}),
+			}),
+			scope:New("ImageLabel")({
 				Name = "Artwork",
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 1),
 				Image = image,
 				ScaleType = Enum.ScaleType.Crop,
 				ZIndex = 2,
-			},
+			}),
 			if content then RemoteImage(ctx, scope, { Name = "Uploaded", Content = content, ZIndex = 3 }) else nil,
 		},
-	}
+	})
 end
-

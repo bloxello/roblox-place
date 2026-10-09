@@ -28,7 +28,7 @@ return function(ctx, scope)
 			})
 		)
 	end
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "BottomNav",
 		BackgroundColor3 = theme.sidebar,
 		BorderSizePixel = 0,
@@ -37,13 +37,13 @@ return function(ctx, scope)
 		Size = UDim2.new(1, 0, 0, Theme.layout.bottomNavHeight),
 		Visible = ctx.compact,
 		[Children] = {
-			scope:New "Frame" {
+			scope:New("Frame")({
 				Name = "Divider",
 				BackgroundColor3 = theme.border,
 				BorderSizePixel = 0,
 				Size = UDim2.new(1, 0, 0, 1),
-			},
-			scope:New "Frame" {
+			}),
+			scope:New("Frame")({
 				Name = "Items",
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 1),
@@ -52,7 +52,7 @@ return function(ctx, scope)
 					UI.list(scope, { Direction = "Horizontal" }),
 					items,
 				},
-			},
+			}),
 		},
-	}
+	})
 end

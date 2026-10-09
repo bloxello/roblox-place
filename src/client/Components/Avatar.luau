@@ -9,7 +9,7 @@ local Players = game:GetService("Players")
 return function(ctx, scope, props)
 	local theme = ctx.theme
 	local dimension = props.Dimension or 36
-	return scope:New "ImageLabel" {
+	return scope:New("ImageLabel")({
 		Name = "Avatar",
 		BackgroundColor3 = theme.surfaceHigh,
 		BorderSizePixel = 0,
@@ -17,5 +17,5 @@ return function(ctx, scope, props)
 		LayoutOrder = props.LayoutOrder,
 		Image = `rbxthumb://type=AvatarHeadShot&id={Players.LocalPlayer.UserId}&w=150&h=150`,
 		[Children] = UI.corner(scope, Theme.radius.full),
-	}
+	})
 end

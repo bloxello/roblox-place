@@ -9,10 +9,12 @@ return function(ctx, scope, props)
 	local hovering, pressed, events = UI.interact(scope)
 	local selected = props.Selected or false
 
-	events[OnEvent "Activated"] = function()
-		if props.OnClick then props.OnClick() end
+	events[OnEvent("Activated")] = function()
+		if props.OnClick then
+			props.OnClick()
+		end
 	end
-	return scope:New "TextButton"(UI.merge(events, {
+	return scope:New("TextButton")(UI.merge(events, {
 		Name = props.Name or "Chip",
 		AutoButtonColor = false,
 		BorderSizePixel = 0,
@@ -21,8 +23,12 @@ return function(ctx, scope, props)
 		LayoutOrder = props.LayoutOrder,
 		BackgroundColor3 = scope:Spring(
 			scope:Computed(function(use)
-				if use(selected) then return theme.accentSoft end
-				if use(pressed) then return theme.border end
+				if use(selected) then
+					return theme.accentSoft
+				end
+				if use(pressed) then
+					return theme.border
+				end
 				return if use(hovering) then theme.surfaceHover else theme.surfaceHigh
 			end),
 			45,
@@ -30,7 +36,9 @@ return function(ctx, scope, props)
 		),
 		Text = scope:Computed(function(use)
 			local text = use(props.Text)
-			if props.Count then return `{text}  {props.Count}` end
+			if props.Count then
+				return `{text}  {props.Count}`
+			end
 			return text
 		end),
 		FontFace = Theme.fonts.semibold,
@@ -41,7 +49,7 @@ return function(ctx, scope, props)
 		[Children] = {
 			UI.corner(scope, Theme.radius.full),
 			UI.padding(scope, 0, 14),
-			scope:New "UIStroke" {
+			scope:New("UIStroke")({
 				Thickness = 1,
 				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 				Color = scope:Spring(
@@ -51,7 +59,7 @@ return function(ctx, scope, props)
 					45,
 					1
 				),
-			},
+			}),
 		},
 	}))
 end

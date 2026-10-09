@@ -5,7 +5,7 @@ local Components = script.Parent.Parent.Components
 local Modal = require(Components.Modal)
 
 return function(ctx, scope)
-	return scope:New "TextButton" {
+	return scope:New("TextButton")({
 		Name = "ModalHost",
 		AutoButtonColor = false,
 		Text = "",
@@ -22,13 +22,15 @@ return function(ctx, scope)
 			end),
 			TweenInfo.new(0.18)
 		),
-		[OnEvent "Activated"] = function()
+		[OnEvent("Activated")] = function()
 			ctx.modal.close()
 		end,
 		[Children] = scope:Computed(function(use, inner)
 			local spec = use(ctx.modal.current)
-			if not spec then return nil end
+			if not spec then
+				return nil
+			end
 			return Modal(ctx, inner, { Spec = spec })
 		end),
-	}
+	})
 end

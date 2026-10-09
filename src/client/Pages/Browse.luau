@@ -16,13 +16,13 @@ local Dropdown = require(Components.Dropdown)
 local BrowseState = require(script.Parent.Parent.Services.BrowseState)
 
 local function chipRow(ctx, scope, order, children)
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		LayoutOrder = order,
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		[Children] = { UI.list(scope, { Direction = "Horizontal", Gap = 8, Wrap = true }), children },
-	}
+	})
 end
 
 return function(ctx, scope)
@@ -30,16 +30,18 @@ return function(ctx, scope)
 	local catalog = ctx.catalog
 
 	local function ready(inner)
-		local categoryChips = { Chip(ctx, inner, {
-			LayoutOrder = 0,
-			Text = "All",
-			Selected = inner:Computed(function(use)
-				return use(browse.category) == nil
-			end),
-			OnClick = function()
-				browse.category:set(nil)
-			end,
-		}) }
+		local categoryChips = {
+			Chip(ctx, inner, {
+				LayoutOrder = 0,
+				Text = "All",
+				Selected = inner:Computed(function(use)
+					return use(browse.category) == nil
+				end),
+				OnClick = function()
+					browse.category:set(nil)
+				end,
+			}),
+		}
 		local chips = inner:ForValues(catalog.categories, function(use, cell, category)
 			return Chip(ctx, cell, {
 				Text = category.name,
@@ -85,7 +87,7 @@ return function(ctx, scope)
 		return {
 			chipRow(ctx, inner, 1, { categoryChips, chips }),
 			chipRow(ctx, inner, 2, bandChips),
-			inner:New "Frame" {
+			inner:New("Frame")({
 				Name = "Toolbar",
 				LayoutOrder = 3,
 				BackgroundTransparency = 1,
@@ -98,7 +100,7 @@ return function(ctx, scope)
 						AnchorPoint = Vector2.new(0, 0.5),
 						Position = UDim2.fromScale(0, 0.5),
 					}),
-					inner:New "Frame" {
+					inner:New("Frame")({
 						BackgroundTransparency = 1,
 						AnchorPoint = Vector2.new(1, 0.5),
 						Position = UDim2.fromScale(1, 0.5),
@@ -112,9 +114,9 @@ return function(ctx, scope)
 								browse.sort:set(id)
 							end,
 						}),
-					},
+					}),
 				},
-			},
+			}),
 			inner:Computed(function(use, results)
 				if not use(hasResults) then
 					return EmptyState(ctx, results, {

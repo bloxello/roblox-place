@@ -12,16 +12,18 @@ return function(ctx, scope, props)
 	local hovering, pressed, events = UI.interact(scope)
 	local selected = props.Selected or false
 	local tab = props.Layout == "tab"
-	events[OnEvent "Activated"] = function()
+	events[OnEvent("Activated")] = function()
 		props.OnClick()
 	end
 
 	local tone = scope:Computed(function(use)
-		if use(selected) then return theme.accent end
+		if use(selected) then
+			return theme.accent
+		end
 		return if use(hovering) then theme.text else theme.textMuted
 	end)
 	local badge = if props.Count
-		then scope:New "TextLabel" {
+		then scope:New("TextLabel")({
 			Name = "Count",
 			Visible = scope:Computed(function(use)
 				return use(props.Count) > 0
@@ -35,10 +37,10 @@ return function(ctx, scope, props)
 			FontFace = Theme.fonts.bold,
 			TextSize = 11,
 			[Children] = UI.corner(scope, Theme.radius.full),
-		}
+		})
 		else nil
 
-	return scope:New "TextButton"(UI.merge(events, {
+	return scope:New("TextButton")(UI.merge(events, {
 		Name = props.Name or "NavItem",
 		AutoButtonColor = false,
 		Text = "",
@@ -48,8 +50,12 @@ return function(ctx, scope, props)
 		BackgroundColor3 = theme.surfaceHigh,
 		BackgroundTransparency = scope:Spring(
 			scope:Computed(function(use)
-				if use(selected) then return 0.0 end
-				if use(pressed) then return 0.2 end
+				if use(selected) then
+					return 0.0
+				end
+				if use(pressed) then
+					return 0.2
+				end
 				return if use(hovering) then 0.5 else 1
 			end),
 			45,

@@ -26,7 +26,9 @@ function WishlistService.new(scope, remotes, toasts)
 		saveToken += 1
 		local token = saveToken
 		task.delay(SAVE_DELAY, function()
-			if token ~= saveToken then return end
+			if token ~= saveToken then
+				return
+			end
 			local ids = {}
 			for id in peek(set) do
 				table.insert(ids, id)

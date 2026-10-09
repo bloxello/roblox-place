@@ -20,11 +20,11 @@ local function ProductCard(ctx, scope, props)
 	local hovering, pressed, events = UI.interact(scope)
 	local price = ctx.prices.priceOf(scope, product)
 	local category = product.categories[1]
-	events[OnEvent "Activated"] = function()
+	events[OnEvent("Activated")] = function()
 		ctx.router.navigate("Product", { id = product.id })
 	end
 
-	return scope:New "TextButton"(UI.merge(events, {
+	return scope:New("TextButton")(UI.merge(events, {
 		Name = "ProductCard",
 		AutoButtonColor = false,
 		Text = "",
@@ -41,7 +41,7 @@ local function ProductCard(ctx, scope, props)
 		ClipsDescendants = true,
 		[Children] = {
 			UI.corner(scope, Theme.radius.lg),
-			scope:New "UIStroke" {
+			scope:New("UIStroke")({
 				Thickness = 1,
 				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 				Color = scope:Spring(
@@ -51,19 +51,21 @@ local function ProductCard(ctx, scope, props)
 					45,
 					1
 				),
-			},
-			scope:New "UIScale" {
+			}),
+			scope:New("UIScale")({
 				Scale = scope:Spring(
 					scope:Computed(function(use)
-						if use(pressed) then return 0.98 end
+						if use(pressed) then
+							return 0.98
+						end
 						return if use(hovering) then 1.012 else 1
 					end),
 					40,
 					0.8
 				),
-			},
+			}),
 			UI.list(scope, {}),
-			scope:New "Frame" {
+			scope:New("Frame")({
 				Name = "Media",
 				LayoutOrder = 1,
 				BackgroundTransparency = 1,
@@ -78,11 +80,15 @@ local function ProductCard(ctx, scope, props)
 						ZIndex = 5,
 					}),
 					if product.kind == "pass"
-						then Badge(ctx, scope, { Text = "GAME PASS", Kind = "accent", Position = UDim2.fromOffset(8, 8), ZIndex = 5 })
+						then Badge(
+							ctx,
+							scope,
+							{ Text = "GAME PASS", Kind = "accent", Position = UDim2.fromOffset(8, 8), ZIndex = 5 }
+						)
 						else nil,
 				},
-			},
-			scope:New "Frame" {
+			}),
+			scope:New("Frame")({
 				Name = "Info",
 				LayoutOrder = 2,
 				BackgroundTransparency = 1,
@@ -115,28 +121,40 @@ local function ProductCard(ctx, scope, props)
 						MaxLines = 2,
 						VAlign = Enum.TextYAlignment.Top,
 					}),
-					scope:New "Frame" {
+					scope:New("Frame")({
 						Name = "Footer",
 						LayoutOrder = 4,
 						BackgroundTransparency = 1,
 						Size = UDim2.new(1, 0, 0, 32),
 						[Children] = {
-							Price(ctx, scope, { Amount = price, Size = "md", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromScale(0, 0.5) }),
-							scope:New "Frame" {
+							Price(
+								ctx,
+								scope,
+								{
+									Amount = price,
+									Size = "md",
+									AnchorPoint = Vector2.new(0, 0.5),
+									Position = UDim2.fromScale(0, 0.5),
+								}
+							),
+							scope:New("Frame")({
 								BackgroundTransparency = 1,
 								AutomaticSize = Enum.AutomaticSize.X,
 								Size = UDim2.fromOffset(0, 30),
 								AnchorPoint = Vector2.new(1, 0.5),
 								Position = UDim2.fromScale(1, 0.5),
 								[Children] = {
-									UI.list(scope, { Direction = "Horizontal", VAlign = Enum.VerticalAlignment.Center }),
+									UI.list(
+										scope,
+										{ Direction = "Horizontal", VAlign = Enum.VerticalAlignment.Center }
+									),
 									BuyButton(ctx, scope, { Product = product }),
 								},
-							},
+							}),
 						},
-					},
+					}),
 				},
-			},
+			}),
 		},
 	}))
 end

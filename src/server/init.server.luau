@@ -19,7 +19,9 @@ local reportGamePass = Instance.new("RemoteEvent")
 reportGamePass.Name = "ReportGamePass"
 reportGamePass.Parent = remotes
 reportGamePass.OnServerEvent:Connect(function(player, gamePassId)
-	if type(gamePassId) ~= "number" then return end
+	if type(gamePassId) ~= "number" then
+		return
+	end
 	PurchaseService.processGamePass(player, gamePassId)
 end)
 
@@ -47,8 +49,12 @@ ImageService.start()
 WishlistService.start()
 PurchaseService.start()
 task.spawn(function()
-	if game.PlaceId > 0 then ApiClient.reportConnection() end
+	if game.PlaceId > 0 then
+		ApiClient.reportConnection()
+	end
 end)
 task.spawn(function()
-	while task.wait(120) do CatalogService.refresh() end
+	while task.wait(120) do
+		CatalogService.refresh()
+	end
 end)

@@ -20,9 +20,13 @@ function Router.new(scope, initial: string)
 	function self.navigate(name: string, params: { [string]: any }?)
 		local current = peek(route)
 		params = params or {}
-		if current.name == name and current.params.id == params.id then return end
+		if current.name == name and current.params.id == params.id then
+			return
+		end
 		table.insert(history, current)
-		if #history > MAX_HISTORY then table.remove(history, 1) end
+		if #history > MAX_HISTORY then
+			table.remove(history, 1)
+		end
 		publish({ name = name, params = params })
 	end
 
@@ -34,7 +38,9 @@ function Router.new(scope, initial: string)
 
 	function self.back()
 		local previous = table.remove(history)
-		if previous then publish(previous) end
+		if previous then
+			publish(previous)
+		end
 	end
 
 	return self

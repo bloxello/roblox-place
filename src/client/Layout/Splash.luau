@@ -15,19 +15,19 @@ return function(scope, name: string?)
 		pulse:set((math.sin(os.clock() * 3) + 1) / 2)
 	end)
 	table.insert(scope, connection)
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "Splash",
 		BackgroundColor3 = palette.bg,
 		BorderSizePixel = 0,
 		Size = UDim2.fromScale(1, 1),
 		ZIndex = 100,
-		[Children] = scope:New "Frame" {
+		[Children] = scope:New("Frame")({
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(240, 120),
 			[Children] = {
-				scope:New "TextLabel" {
+				scope:New("TextLabel")({
 					AnchorPoint = Vector2.new(0.5, 0),
 					Position = UDim2.fromScale(0.5, 0),
 					Size = UDim2.fromOffset(64, 64),
@@ -37,7 +37,7 @@ return function(scope, name: string?)
 					TextSize = 32,
 					TextColor3 = palette.onAccent,
 					[Children] = UI.corner(scope, Theme.radius.lg),
-				},
+				}),
 				Label(ctx, scope, {
 					Text = "Loading store",
 					Variant = "body",
@@ -50,6 +50,6 @@ return function(scope, name: string?)
 					Align = Enum.TextXAlignment.Center,
 				}),
 			},
-		},
-	}
+		}),
+	})
 end

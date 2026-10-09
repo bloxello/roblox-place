@@ -21,7 +21,9 @@ local usage = {}
 local function remember(key, entry)
 	cache[key] = entry
 	table.insert(order, key)
-	if #order > CACHE_LIMIT then cache[table.remove(order, 1)] = nil end
+	if #order > CACHE_LIMIT then
+		cache[table.remove(order, 1)] = nil
+	end
 end
 
 local function acquire()
@@ -57,30 +59,50 @@ end
 local function exists(kind: string, id: string?)
 	local catalog = CatalogService.get()
 	local store = catalog and catalog.store
-	if not store then return false end
-	if kind == "logo" then return store.logoUrl ~= nil end
-	if kind == "banner" then return store.bannerUrl ~= nil end
-	if kind ~= "product" or type(id) ~= "string" then return false end
+	if not store then
+		return false
+	end
+	if kind == "logo" then
+		return store.logoUrl ~= nil
+	end
+	if kind == "banner" then
+		return store.bannerUrl ~= nil
+	end
+	if kind ~= "product" or type(id) ~= "string" then
+		return false
+	end
 	for _, product in store.products do
-		if product.id == id then return product.hasImage == true end
+		if product.id == id then
+			return product.hasImage == true
+		end
 	end
 	return false
 end
 
 function ImageService.get(player: Player, kind: any, id: any)
-	if type(kind) ~= "string" or (id ~= nil and (type(id) ~= "string" or #id > 60)) then return nil end
-	if not allowed(player) or not exists(kind, id) then return nil end
+	if type(kind) ~= "string" or (id ~= nil and (type(id) ~= "string" or #id > 60)) then
+		return nil
+	end
+	if not allowed(player) or not exists(kind, id) then
+		return nil
+	end
 
 	local key = `{kind}:{id or ""}`
 	local hit = cache[key]
-	if hit then return hit.pixels, hit.width, hit.height end
-	if failed[key] and os.clock() - failed[key] < FAIL_TTL then return nil end
+	if hit then
+		return hit.pixels, hit.width, hit.height
+	end
+	if failed[key] and os.clock() - failed[key] < FAIL_TTL then
+		return nil
+	end
 
 	if inflight[key] then
 		table.insert(inflight[key], coroutine.running())
 		coroutine.yield()
 		local entry = cache[key]
-		if entry then return entry.pixels, entry.width, entry.height end
+		if entry then
+			return entry.pixels, entry.width, entry.height
+		end
 		return nil
 	end
 

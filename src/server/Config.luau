@@ -8,4 +8,3 @@ return table.freeze({
 	CatalogRefreshSeconds = 120,
 	RequestTimeoutSeconds = 10,
 })
-

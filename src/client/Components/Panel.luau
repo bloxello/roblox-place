@@ -6,7 +6,7 @@ local Children = Fusion.Children
 -- Rounded surface with optional stroke, padding and list layout.
 return function(ctx, scope, props)
 	local theme = ctx.theme
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = props.Name or "Panel",
 		BackgroundColor3 = props.Color or theme.surface,
 		BackgroundTransparency = props.Transparency or 0,
@@ -26,5 +26,5 @@ return function(ctx, scope, props)
 			if props.List then UI.list(scope, props.List) else nil,
 			props.Children,
 		},
-	}
+	})
 end

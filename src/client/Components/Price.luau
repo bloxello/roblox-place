@@ -9,7 +9,7 @@ local Util = require(Core.Util)
 return function(ctx, scope, props)
 	local theme = ctx.theme
 	local hex = theme.robux:ToHex()
-	return scope:New "TextLabel" {
+	return scope:New("TextLabel")({
 		Name = props.Name or "Price",
 		BackgroundTransparency = 1,
 		AutomaticSize = Enum.AutomaticSize.XY,
@@ -25,5 +25,5 @@ return function(ctx, scope, props)
 		Text = scope:Computed(function(use)
 			return `<font color="#{hex}">{Icons.robux}</font> {Util.formatNumber(use(props.Amount))}`
 		end),
-	}
+	})
 end

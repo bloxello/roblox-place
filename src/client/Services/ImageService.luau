@@ -17,8 +17,12 @@ function ImageService.new(scope, remotes)
 		local ok, pixels, width, height = pcall(function()
 			return remotes.GetImage:InvokeServer(kind, id)
 		end)
-		if not ok or typeof(pixels) ~= "buffer" or type(width) ~= "number" or type(height) ~= "number" then return nil end
-		if buffer.len(pixels) ~= width * height * 4 then return nil end
+		if not ok or typeof(pixels) ~= "buffer" or type(width) ~= "number" or type(height) ~= "number" then
+			return nil
+		end
+		if buffer.len(pixels) ~= width * height * 4 then
+			return nil
+		end
 		local created, image = pcall(function()
 			local editable = AssetService:CreateEditableImage({ Size = Vector2.new(width, height) })
 			editable:WritePixelsBuffer(Vector2.zero, Vector2.new(width, height), pixels)
@@ -47,7 +51,9 @@ function ImageService.new(scope, remotes)
 	function self.of(kind: string, id: string?)
 		local key = `{kind}:{id or ""}`
 		local state = states[key]
-		if state then return state end
+		if state then
+			return state
+		end
 		state = scope:Value(Content.none)
 		states[key] = state
 		table.insert(queue, { kind = kind, id = id, key = key, state = state })
@@ -56,7 +62,9 @@ function ImageService.new(scope, remotes)
 	end
 
 	function self.product(entry)
-		if not entry.hasImage then return nil end
+		if not entry.hasImage then
+			return nil
+		end
 		return self.of("product", entry.id)
 	end
 
@@ -69,5 +77,3 @@ function ImageService.new(scope, remotes)
 end
 
 return ImageService
-
-

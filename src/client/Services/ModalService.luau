@@ -19,7 +19,9 @@ function ModalService.new(scope)
 	function self.confirm()
 		local spec = peek(current)
 		current:set(nil)
-		if spec and spec.onConfirm then spec.onConfirm() end
+		if spec and spec.onConfirm then
+			spec.onConfirm()
+		end
 	end
 
 	return self

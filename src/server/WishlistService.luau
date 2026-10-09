@@ -18,7 +18,9 @@ end
 
 local function sanitize(value: any): { string }
 	local result, seen = {}, {}
-	if type(value) ~= "table" then return result end
+	if type(value) ~= "table" then
+		return result
+	end
 	for _, id in value do
 		if type(id) == "string" and #id > 0 and #id <= 64 and not seen[id] and #result < MAX_ITEMS then
 			seen[id] = true
@@ -29,7 +31,9 @@ local function sanitize(value: any): { string }
 end
 
 local function flush(userId: number)
-	if not dirty[userId] then return end
+	if not dirty[userId] then
+		return
+	end
 	dirty[userId] = nil
 	lastSave[userId] = os.clock()
 	local list = cache[userId]
@@ -38,7 +42,9 @@ end
 
 function WishlistService.get(player: Player): { string }
 	local userId = player.UserId
-	if cache[userId] then return cache[userId] end
+	if cache[userId] then
+		return cache[userId]
+	end
 	local ok, stored = pcall(store.GetAsync, store, key(userId))
 	cache[userId] = if ok then sanitize(stored) else {}
 	return cache[userId]
@@ -62,7 +68,9 @@ function WishlistService.start()
 		lastSave[player.UserId] = nil
 	end)
 	game:BindToClose(function()
-		for userId in dirty do flush(userId) end
+		for userId in dirty do
+			flush(userId)
+		end
 	end)
 end
 

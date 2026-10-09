@@ -13,7 +13,9 @@ function ToastService.new(scope)
 	function self.remove(id: number)
 		local updated = {}
 		for _, toast in peek(items) do
-			if toast.id ~= id then table.insert(updated, toast) end
+			if toast.id ~= id then
+				table.insert(updated, toast)
+			end
 		end
 		items:set(updated)
 	end

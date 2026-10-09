@@ -8,7 +8,7 @@ local Label = require(script.Parent.Label)
 
 return function(ctx, scope, props)
 	local theme = ctx.theme
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "StatTile",
 		BackgroundColor3 = theme.bg,
 		BackgroundTransparency = 0.35,
@@ -24,5 +24,5 @@ return function(ctx, scope, props)
 			Label(ctx, scope, { LayoutOrder = 1, Text = props.Value, Variant = "heading" }),
 			Label(ctx, scope, { LayoutOrder = 2, Text = props.Label, Variant = "caption", Color = theme.textMuted }),
 		},
-	}
+	})
 end

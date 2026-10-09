@@ -14,8 +14,12 @@ return function(ctx, scope, props)
 
 	local background = scope:Spring(
 		scope:Computed(function(use)
-			if use(pressed) then return theme.border end
-			if use(hovering) then return theme.surfaceHover end
+			if use(pressed) then
+				return theme.border
+			end
+			if use(hovering) then
+				return theme.surfaceHover
+			end
 			return if variant == "overlay" then theme.overlay else theme.surfaceHigh
 		end),
 		45,
@@ -23,16 +27,20 @@ return function(ctx, scope, props)
 	)
 	local transparency = scope:Spring(
 		scope:Computed(function(use)
-			if variant == "ghost" and not use(hovering) then return 1 end
+			if variant == "ghost" and not use(hovering) then
+				return 1
+			end
 			return if variant == "overlay" then 0.35 else 0
 		end),
 		45,
 		1
 	)
-	events[OnEvent "Activated"] = function()
-		if props.OnClick then props.OnClick() end
+	events[OnEvent("Activated")] = function()
+		if props.OnClick then
+			props.OnClick()
+		end
 	end
-	return scope:New "TextButton"(UI.merge(events, {
+	return scope:New("TextButton")(UI.merge(events, {
 		Name = props.Name or "IconButton",
 		AutoButtonColor = false,
 		BorderSizePixel = 0,
@@ -42,7 +50,9 @@ return function(ctx, scope, props)
 		FontFace = Theme.fonts.bold,
 		TextSize = props.TextSize or math.floor(dimension * 0.5),
 		TextColor3 = scope:Computed(function(use)
-			if use(active) then return props.ActiveColor or theme.danger end
+			if use(active) then
+				return props.ActiveColor or theme.danger
+			end
 			return if use(hovering) then theme.text else theme.textMuted
 		end),
 		Size = UDim2.fromOffset(dimension, dimension),
@@ -53,7 +63,7 @@ return function(ctx, scope, props)
 		ZIndex = props.ZIndex,
 		[Children] = {
 			UI.corner(scope, Theme.radius.md),
-			scope:New "UIScale" {
+			scope:New("UIScale")({
 				Scale = scope:Spring(
 					scope:Computed(function(use)
 						return if use(pressed) then 0.9 else 1
@@ -61,7 +71,7 @@ return function(ctx, scope, props)
 					45,
 					0.7
 				),
-			},
+			}),
 		},
 	}))
 end

@@ -7,7 +7,7 @@ local Skeleton = require(script.Parent.Skeleton)
 
 return function(ctx, scope, order)
 	local theme = ctx.theme
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "SkeletonCard",
 		LayoutOrder = order,
 		BackgroundColor3 = theme.surface,
@@ -24,5 +24,5 @@ return function(ctx, scope, order)
 			Skeleton(ctx, scope, { LayoutOrder = 4, Size = UDim2.new(1, 0, 0, 12) }),
 			Skeleton(ctx, scope, { LayoutOrder = 5, Size = UDim2.new(0.3, 0, 0, 24) }),
 		},
-	}
+	})
 end

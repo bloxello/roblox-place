@@ -10,7 +10,7 @@ local Button = require(script.Parent.Button)
 
 return function(ctx, scope, props)
 	local theme = ctx.theme
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = props.Name or "EmptyState",
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 0),
@@ -19,7 +19,7 @@ return function(ctx, scope, props)
 		[Children] = {
 			UI.padding(scope, 48, 16),
 			UI.list(scope, { Gap = 12, HAlign = Enum.HorizontalAlignment.Center }),
-			scope:New "TextLabel" {
+			scope:New("TextLabel")({
 				Name = "Icon",
 				LayoutOrder = 1,
 				BackgroundColor3 = theme.surfaceHigh,
@@ -29,7 +29,7 @@ return function(ctx, scope, props)
 				TextSize = 28,
 				TextColor3 = theme.textMuted,
 				[Children] = UI.corner(scope, Theme.radius.xl),
-			},
+			}),
 			Label(ctx, scope, {
 				LayoutOrder = 2,
 				Text = props.Title,
@@ -45,8 +45,12 @@ return function(ctx, scope, props)
 				Align = Enum.TextXAlignment.Center,
 			}),
 			if props.ActionText
-				then Button(ctx, scope, { LayoutOrder = 4, Text = props.ActionText, Variant = "secondary", OnClick = props.OnAction })
+				then Button(
+					ctx,
+					scope,
+					{ LayoutOrder = 4, Text = props.ActionText, Variant = "secondary", OnClick = props.OnAction }
+				)
 				else nil,
 		},
-	}
+	})
 end

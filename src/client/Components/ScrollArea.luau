@@ -9,7 +9,7 @@ return function(ctx, scope, props)
 	local pad = scope:Computed(function(use)
 		return if use(ctx.compact) then 14 else 28
 	end)
-	return scope:New "ScrollingFrame" {
+	return scope:New("ScrollingFrame")({
 		Name = props.Name or "ScrollArea",
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
@@ -21,7 +21,7 @@ return function(ctx, scope, props)
 		ScrollBarImageColor3 = theme.border,
 		ScrollBarImageTransparency = 0.2,
 		VerticalScrollBarInset = Enum.ScrollBarInset.None,
-		[Children] = scope:New "Frame" {
+		[Children] = scope:New("Frame")({
 			Name = "Content",
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(0.5, 0),
@@ -30,7 +30,7 @@ return function(ctx, scope, props)
 			AutomaticSize = Enum.AutomaticSize.Y,
 			[Children] = {
 				UI.maxWidth(scope, Theme.layout.maxContent),
-				scope:New "UIPadding" {
+				scope:New("UIPadding")({
 					PaddingTop = UDim.new(0, 24),
 					PaddingBottom = UDim.new(0, 40),
 					PaddingLeft = scope:Computed(function(use)
@@ -39,10 +39,10 @@ return function(ctx, scope, props)
 					PaddingRight = scope:Computed(function(use)
 						return UDim.new(0, use(pad))
 					end),
-				},
+				}),
 				UI.list(scope, { Gap = props.Gap or 28 }),
 				props.Children,
 			},
-		},
-	}
+		}),
+	})
 end

@@ -16,7 +16,7 @@ return function(ctx, scope, props)
 			automatic = automatic or Enum.AutomaticSize.XY
 		end
 	end
-	return scope:New "TextLabel" {
+	return scope:New("TextLabel")({
 		Name = props.Name or "Label",
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
@@ -38,5 +38,5 @@ return function(ctx, scope, props)
 		AnchorPoint = props.AnchorPoint,
 		LayoutOrder = props.LayoutOrder,
 		ZIndex = props.ZIndex,
-	}
+	})
 end
