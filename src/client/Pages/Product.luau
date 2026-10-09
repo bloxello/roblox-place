@@ -145,7 +145,7 @@ return function(ctx, scope, params)
 				infoPanel(ctx, inner, "How delivery works", {
 					Label(ctx, inner, {
 						LayoutOrder = 1,
-						Text = "Items are Roblox developer assets (game passes and developer products) from creators. Checkout happens in Roblox's official purchase prompt, paid with your own Robux. Everything the creator includes then appears under My items, right here in the experience. Bloxello never asks for your password or sells Robux.",
+						Text = "Items are Roblox developer assets (game passes and developer products) from creators. Checkout happens in Roblox's official purchase prompt, paid with your own Robux. Everything you buy is listed under My items, right here in the experience. Bloxello never asks for your password or sells Robux.",
 						Variant = "caption",
 						Color = theme.textMuted,
 						Wrap = true,
@@ -161,6 +161,7 @@ return function(ctx, scope, params)
 			Size = UDim2.fromScale(1, 0),
 			[Children] = {
 				UI.aspect(inner, 1),
+				UI.maxWidth(inner, 440),
 				Thumbnail(ctx, inner, { Product = product, Size = UDim2.fromScale(1, 1), Radius = Theme.radius.xl }),
 			},
 		})
@@ -168,19 +169,19 @@ return function(ctx, scope, params)
 		local top = inner:Computed(function(use, cell)
 			if use(ctx.compact) then
 				return {
-					UI.list(cell, { Gap = 18 }),
+					UI.list(cell, { Gap = 18, HAlign = Enum.HorizontalAlignment.Center }),
 					media,
 					details,
 				}
 			end
 			return {
-				UI.list(cell, { Direction = "Horizontal", Gap = 28 }),
+				UI.list(cell, { Direction = "Horizontal", Gap = 28, VAlign = Enum.VerticalAlignment.Top }),
 				cell:New("Frame")({
 					LayoutOrder = 1,
 					BackgroundTransparency = 1,
 					Size = UDim2.new(0.42, -14, 0, 0),
 					AutomaticSize = Enum.AutomaticSize.Y,
-					[Children] = { UI.list(cell, {}), media },
+					[Children] = { UI.list(cell, { HAlign = Enum.HorizontalAlignment.Center }), media },
 				}),
 				cell:New("Frame")({
 					LayoutOrder = 2,

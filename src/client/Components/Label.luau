@@ -16,6 +16,11 @@ return function(ctx, scope, props)
 			automatic = automatic or Enum.AutomaticSize.XY
 		end
 	end
+	-- TextLabel has no MaxLines property, so cap the height instead.
+	if props.MaxLines and not sized then
+		size = UDim2.new(1, 0, 0, math.ceil(style.size * style.line) * props.MaxLines)
+		automatic = Enum.AutomaticSize.None
+	end
 	return scope:New("TextLabel")({
 		Name = props.Name or "Label",
 		BackgroundTransparency = 1,
@@ -31,7 +36,6 @@ return function(ctx, scope, props)
 		TextYAlignment = props.VAlign or Enum.TextYAlignment.Center,
 		TextWrapped = props.Wrap or props.MaxLines ~= nil or false,
 		TextTruncate = if props.MaxLines or props.Truncate then Enum.TextTruncate.AtEnd else Enum.TextTruncate.None,
-		MaxLines = props.MaxLines,
 		Size = size,
 		AutomaticSize = automatic or Enum.AutomaticSize.None,
 		Position = props.Position,

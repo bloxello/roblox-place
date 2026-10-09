@@ -14,7 +14,7 @@ local InfoRow = require(Components.InfoRow)
 local FAQ = {
 	{ "What is Bloxello?", "Bloxello is a hub for buying Roblox developer assets: game passes and developer products made by creators. It does not sell or give away Robux, and it is not a Robux generator." },
 	{ "How do I buy an item?", "Open an item and press Buy. Roblox shows its own purchase prompt, and you confirm it with your own Robux. Bloxello never asks for your password." },
-	{ "Where do my purchases go?", "Everything that comes with your purchase (files, keys, links and setup instructions) appears under My items, right here in the experience. Nothing requires leaving Roblox. If a creator delivers something by hand, it shows up there once they've sent it." },
+	{ "Where do my purchases go?", "Items you buy are listed under My items, right here in the experience. The Hub never shows links, files or keys. Whatever the creator includes with a purchase is handled by the creator through the Bloxello platform." },
 	{ "What does the heart do?", "It saves the item to your wishlist so you can find it again under Saved." },
 	{ "Prices look wrong or out of date", "Prices refresh automatically. If something still looks off, reopen the experience." },
 }
