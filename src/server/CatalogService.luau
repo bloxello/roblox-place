@@ -1,6 +1,5 @@
 local MemoryStoreService = game:GetService("MemoryStoreService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Config = require(ReplicatedStorage.Bloxello.Config)
+local Config = require(script.Parent.Config)
 local ApiClient = require(script.Parent.ApiClient)
 
 local cache = MemoryStoreService:GetHashMap(`bloxello-catalog-{Config.StoreId}`)

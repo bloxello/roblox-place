@@ -1,6 +1,5 @@
 local HttpService = game:GetService("HttpService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Config = require(ReplicatedStorage.Bloxello.Config)
+local Config = require(script.Parent.Config)
 
 local ApiClient = {}
 
