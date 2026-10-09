@@ -15,7 +15,7 @@ return function(ctx, scope, props)
 			pulse:set((math.sin(os.clock() * 3) + 1) / 2)
 		end)
 	)
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = props.Name or "Skeleton",
 		BackgroundColor3 = theme.surfaceHigh,
 		BackgroundTransparency = scope:Computed(function(use)
@@ -26,5 +26,5 @@ return function(ctx, scope, props)
 		LayoutOrder = props.LayoutOrder,
 		Position = props.Position,
 		[Children] = UI.corner(scope, props.Radius or Theme.radius.sm),
-	}
+	})
 end

@@ -18,7 +18,7 @@ return function(ctx, scope)
 		task.delay(toast.duration, function()
 			ctx.toasts.remove(toast.id)
 		end)
-		return inner:New "CanvasGroup" {
+		return inner:New("CanvasGroup")({
 			Name = "Toast",
 			LayoutOrder = toast.id,
 			BackgroundColor3 = theme.surfaceHigh,
@@ -33,12 +33,12 @@ return function(ctx, scope)
 			[Children] = {
 				UI.corner(inner, Theme.radius.md),
 				UI.stroke(inner, tone, 1, 0.5),
-				inner:New "Frame" {
+				inner:New("Frame")({
 					Name = "Bar",
 					BackgroundColor3 = tone,
 					BorderSizePixel = 0,
 					Size = UDim2.new(0, 4, 1, 0),
-				},
+				}),
 				Label(ctx, inner, {
 					Text = ICONS[toast.kind] or Icons.info,
 					Font = Theme.fonts.bold,
@@ -57,10 +57,10 @@ return function(ctx, scope)
 					MaxLines = 2,
 				}),
 			},
-		}
+		})
 	end
 
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "ToastHost",
 		BackgroundTransparency = 1,
 		ZIndex = 50,
@@ -75,5 +75,5 @@ return function(ctx, scope)
 			UI.list(scope, { Gap = 8, VAlign = Enum.VerticalAlignment.Bottom }),
 			scope:ForValues(ctx.toasts.items, render),
 		},
-	}
+	})
 end

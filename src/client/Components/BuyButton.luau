@@ -11,7 +11,11 @@ return function(ctx, scope, props)
 	local pending = ctx.purchase.isPending(scope, product)
 	return scope:Computed(function(use, inner)
 		if use(owned) then
-			return Badge(ctx, inner, { Text = Icons.check .. " Owned", Kind = "success", LayoutOrder = props.LayoutOrder })
+			return Badge(
+				ctx,
+				inner,
+				{ Text = Icons.check .. " Owned", Kind = "success", LayoutOrder = props.LayoutOrder }
+			)
 		end
 		return Button(ctx, inner, {
 			Text = props.Text or "Buy",

@@ -16,7 +16,9 @@ return function(ctx, scope)
 			local set = use(ctx.wishlist.set)
 			local out = {}
 			for _, product in use(ctx.catalog.products) do
-				if set[product.id] then table.insert(out, product) end
+				if set[product.id] then
+					table.insert(out, product)
+				end
 			end
 			return out
 		end)

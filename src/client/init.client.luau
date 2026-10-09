@@ -102,19 +102,21 @@ end)
 
 function ctx.reload()
 	catalog.fetch():andThen(function()
-		if peek(catalog.status) == "ready" then prices.load(peek(catalog.products)) end
+		if peek(catalog.status) == "ready" then
+			prices.load(peek(catalog.products))
+		end
 	end)
 end
 
 local gui = newGui("BloxelloHub", 10)
-local root = scope:New "Frame" {
+local root = scope:New("Frame")({
 	Name = "Root",
 	BackgroundColor3 = ctx.theme.bg,
 	BorderSizePixel = 0,
 	Size = UDim2.fromScale(1, 1),
-	[Fusion.Out "AbsoluteSize"] = viewport,
+	[Fusion.Out("AbsoluteSize")] = viewport,
 	[Fusion.Children] = App(ctx, scope),
-}
+})
 root.Parent = gui
 
 if peek(catalog.status) == "ready" then
@@ -132,5 +134,3 @@ local launch = joinData and joinData.TeleportData
 if type(launch) == "table" and type(launch.productId) == "string" and catalog.find(launch.productId) then
 	router.navigate("Product", { id = launch.productId })
 end
-
-

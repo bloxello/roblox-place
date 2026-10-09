@@ -9,7 +9,7 @@ return function(_ctx, scope, props)
 	local loaded = scope:Computed(function(use)
 		return use(props.Content).SourceType ~= Enum.ContentSourceType.None
 	end)
-	return scope:New "ImageLabel" {
+	return scope:New("ImageLabel")({
 		Name = props.Name or "RemoteImage",
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
@@ -26,8 +26,6 @@ return function(_ctx, scope, props)
 			end),
 			TweenInfo.new(0.25)
 		),
-		[Children] = if props.Radius then scope:New "UICorner" { CornerRadius = UDim.new(0, props.Radius) } else nil,
-	}
+		[Children] = if props.Radius then scope:New("UICorner")({ CornerRadius = UDim.new(0, props.Radius) }) else nil,
+	})
 end
-
-

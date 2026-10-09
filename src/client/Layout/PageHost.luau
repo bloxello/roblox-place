@@ -12,7 +12,7 @@ end
 
 -- Rebuilds the page whenever the route changes; the old page is destroyed with its inner scope.
 return function(ctx, scope)
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "PageHost",
 		BackgroundTransparency = 1,
 		ClipsDescendants = true,
@@ -26,5 +26,5 @@ return function(ctx, scope)
 			local page = registry[route.name] or registry.Home
 			return page(ctx, inner, route.params)
 		end),
-	}
+	})
 end

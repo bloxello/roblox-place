@@ -13,7 +13,7 @@ local ModalHost = require(script.Parent.ModalHost)
 return function(ctx, scope)
 	return {
 		Sidebar(ctx, scope),
-		scope:New "Frame" {
+		scope:New("Frame")({
 			Name = "Main",
 			BackgroundTransparency = 1,
 			Position = scope:Computed(function(use)
@@ -27,7 +27,7 @@ return function(ctx, scope)
 				TopBar(ctx, scope),
 				BottomNav(ctx, scope),
 			},
-		},
+		}),
 		ToastHost(ctx, scope),
 		ModalHost(ctx, scope),
 	}

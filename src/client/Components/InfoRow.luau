@@ -6,7 +6,7 @@ local Label = require(script.Parent.Label)
 
 return function(ctx, scope, props)
 	local theme = ctx.theme
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "InfoRow",
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, 0, 0, 24),
@@ -27,5 +27,5 @@ return function(ctx, scope, props)
 				Align = Enum.TextXAlignment.Right,
 			}),
 		},
-	}
+	})
 end

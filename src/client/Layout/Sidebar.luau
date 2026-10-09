@@ -32,7 +32,7 @@ return function(ctx, scope)
 		)
 	end
 
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "Sidebar",
 		BackgroundColor3 = theme.sidebar,
 		BorderSizePixel = 0,
@@ -41,26 +41,26 @@ return function(ctx, scope)
 			return not use(ctx.compact)
 		end),
 		[Children] = {
-			scope:New "Frame" {
+			scope:New("Frame")({
 				Name = "Divider",
 				BackgroundColor3 = theme.border,
 				BorderSizePixel = 0,
 				AnchorPoint = Vector2.new(1, 0),
 				Position = UDim2.fromScale(1, 0),
 				Size = UDim2.new(0, 1, 1, 0),
-			},
-			scope:New "Frame" {
+			}),
+			scope:New("Frame")({
 				Name = "Body",
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 1),
 				[Children] = {
 					UI.padding(scope, 16),
-					scope:New "Frame" {
+					scope:New("Frame")({
 						Name = "Brand",
 						BackgroundTransparency = 1,
 						Size = UDim2.new(1, 0, 0, 52),
 						[Children] = {
-							scope:New "TextLabel" {
+							scope:New("TextLabel")({
 								Name = "Logo",
 								BackgroundColor3 = theme.accent,
 								Size = UDim2.fromOffset(44, 44),
@@ -75,9 +75,13 @@ return function(ctx, scope)
 								[Children] = {
 									UI.corner(scope, Theme.radius.md),
 									UI.gradient(scope, Color3.new(1, 1, 1), Color3.fromRGB(190, 190, 200), 135),
-									RemoteImage(ctx, scope, { Name = "LogoImage", Content = ctx.logo, ZIndex = 2, Radius = Theme.radius.md }),
+									RemoteImage(
+										ctx,
+										scope,
+										{ Name = "LogoImage", Content = ctx.logo, ZIndex = 2, Radius = Theme.radius.md }
+									),
 								},
-							},
+							}),
 							Label(ctx, scope, {
 								Text = scope:Computed(function(use)
 									return use(ctx.catalog.store).name or "Store"
@@ -96,19 +100,29 @@ return function(ctx, scope)
 								Position = UDim2.new(0, 56, 0.5, 3),
 							}),
 						},
-					},
-					scope:New "Frame" {
+					}),
+					scope:New("Frame")({
 						Name = "Nav",
 						BackgroundTransparency = 1,
 						Position = UDim2.fromOffset(0, 76),
 						Size = UDim2.new(1, 0, 1, -76 - 84),
 						[Children] = {
 							UI.list(scope, { Gap = 4 }),
-							Label(ctx, scope, { LayoutOrder = 0, Text = "MENU", Variant = "tiny", Color = theme.textFaint, Size = UDim2.new(1, 0, 0, 22) }),
+							Label(
+								ctx,
+								scope,
+								{
+									LayoutOrder = 0,
+									Text = "MENU",
+									Variant = "tiny",
+									Color = theme.textFaint,
+									Size = UDim2.new(1, 0, 0, 22),
+								}
+							),
 							items,
 						},
-					},
-					scope:New "Frame" {
+					}),
+					scope:New("Frame")({
 						Name = "Footer",
 						BackgroundColor3 = theme.surface,
 						BorderSizePixel = 0,
@@ -136,9 +150,9 @@ return function(ctx, scope)
 								Position = UDim2.fromOffset(52, 22),
 							}),
 						},
-					},
+					}),
 				},
-			},
+			}),
 		},
-	}
+	})
 end

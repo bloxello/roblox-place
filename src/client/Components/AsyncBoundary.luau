@@ -9,7 +9,9 @@ local EmptyState = require(script.Parent.EmptyState)
 return function(ctx, scope, props)
 	return scope:Computed(function(use, inner)
 		local status = use(ctx.catalog.status)
-		if status == "ready" then return props.Ready(inner) end
+		if status == "ready" then
+			return props.Ready(inner)
+		end
 		if status == "error" then
 			return EmptyState(ctx, inner, {
 				Icon = Icons.warning,

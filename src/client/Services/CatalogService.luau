@@ -23,7 +23,8 @@ local function normalize(raw)
 					if info then
 						info.count += 1
 					else
-						categoryMap[category.slug] = { id = category.slug, name = category.name, slug = category.slug, count = 1 }
+						categoryMap[category.slug] =
+							{ id = category.slug, name = category.name, slug = category.slug, count = 1 }
 					end
 				end
 			end
@@ -53,7 +54,9 @@ local function normalize(raw)
 	for _, info in categoryMap do
 		table.insert(categories, info)
 	end
-	table.sort(categories, function(a, b) return a.name < b.name end)
+	table.sort(categories, function(a, b)
+		return a.name < b.name
+	end)
 	return {
 		info = {
 			id = store.id,
@@ -126,4 +129,3 @@ function CatalogService.new(scope, remotes)
 end
 
 return CatalogService
-

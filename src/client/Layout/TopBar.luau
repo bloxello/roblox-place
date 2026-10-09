@@ -27,21 +27,21 @@ return function(ctx, scope)
 		end)
 	)
 
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = "TopBar",
 		BackgroundColor3 = theme.bg,
 		BorderSizePixel = 0,
 		Size = UDim2.new(1, 0, 0, Theme.layout.topBarHeight),
 		ZIndex = 5,
 		[Children] = {
-			scope:New "Frame" {
+			scope:New("Frame")({
 				Name = "Divider",
 				BackgroundColor3 = theme.border,
 				BorderSizePixel = 0,
 				AnchorPoint = Vector2.new(0, 1),
 				Position = UDim2.fromScale(0, 1),
 				Size = UDim2.new(1, 0, 0, 1),
-			},
+			}),
 			IconButton(ctx, scope, {
 				Name = "Back",
 				Icon = Icons.back,
@@ -83,5 +83,5 @@ return function(ctx, scope)
 				end),
 			}),
 		},
-	}
+	})
 end

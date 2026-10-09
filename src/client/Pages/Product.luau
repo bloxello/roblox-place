@@ -69,9 +69,13 @@ return function(ctx, scope, params)
 				if other.id ~= product.id then
 					local matches = first == nil
 					for _, category in other.categories do
-						if first and category.slug == first.slug then matches = true end
+						if first and category.slug == first.slug then
+							matches = true
+						end
 					end
-					if matches then table.insert(out, other) end
+					if matches then
+						table.insert(out, other)
+					end
 				end
 			end
 			table.sort(out, function(a, b)
@@ -83,7 +87,7 @@ return function(ctx, scope, params)
 			return out
 		end)
 
-		local details = inner:New "Frame" {
+		local details = inner:New("Frame")({
 			Name = "Details",
 			LayoutOrder = 2,
 			BackgroundTransparency = 1,
@@ -91,29 +95,35 @@ return function(ctx, scope, params)
 			AutomaticSize = Enum.AutomaticSize.Y,
 			[Children] = {
 				UI.list(inner, { Gap = 14 }),
-				inner:New "Frame" {
+				inner:New("Frame")({
 					LayoutOrder = 1,
 					BackgroundTransparency = 1,
 					Size = UDim2.fromScale(1, 0),
 					AutomaticSize = Enum.AutomaticSize.Y,
 					[Children] = { UI.list(inner, { Direction = "Horizontal", Gap = 6, Wrap = true }), badges },
-				},
+				}),
 				Label(ctx, inner, { LayoutOrder = 2, Text = product.name, Variant = "display", Wrap = true }),
 				Price(ctx, inner, { LayoutOrder = 3, Amount = price, Size = "xl" }),
-				inner:New "Frame" {
+				inner:New("Frame")({
 					LayoutOrder = 4,
 					BackgroundTransparency = 1,
 					Size = UDim2.new(1, 0, 0, 48),
 					[Children] = {
 						UI.list(inner, { Direction = "Horizontal", Gap = 10, VAlign = Enum.VerticalAlignment.Center }),
 						BuyButton(ctx, inner, { LayoutOrder = 1, Product = product, Size = "lg" }),
-						SaveButton(ctx, inner, { LayoutOrder = 2, Product = product, Variant = "surface", Dimension = 48 }),
+						SaveButton(
+							ctx,
+							inner,
+							{ LayoutOrder = 2, Product = product, Variant = "surface", Dimension = 48 }
+						),
 					},
-				},
+				}),
 				infoPanel(ctx, inner, "About this item", {
 					Label(ctx, inner, {
 						LayoutOrder = 1,
-						Text = if product.description ~= "" then product.description else "The seller has not added a description.",
+						Text = if product.description ~= ""
+							then product.description
+							else "The seller has not added a description.",
 						Variant = "body",
 						Color = theme.textMuted,
 						Wrap = true,
@@ -142,9 +152,9 @@ return function(ctx, scope, params)
 					}),
 				}),
 			},
-		}
+		})
 
-		local media = inner:New "Frame" {
+		local media = inner:New("Frame")({
 			Name = "Media",
 			LayoutOrder = 1,
 			BackgroundTransparency = 1,
@@ -153,7 +163,7 @@ return function(ctx, scope, params)
 				UI.aspect(inner, 1),
 				Thumbnail(ctx, inner, { Product = product, Size = UDim2.fromScale(1, 1), Radius = Theme.radius.xl }),
 			},
-		}
+		})
 
 		local top = inner:Computed(function(use, cell)
 			if use(ctx.compact) then
@@ -165,33 +175,33 @@ return function(ctx, scope, params)
 			end
 			return {
 				UI.list(cell, { Direction = "Horizontal", Gap = 28 }),
-				cell:New "Frame" {
+				cell:New("Frame")({
 					LayoutOrder = 1,
 					BackgroundTransparency = 1,
 					Size = UDim2.new(0.42, -14, 0, 0),
 					AutomaticSize = Enum.AutomaticSize.Y,
 					[Children] = { UI.list(cell, {}), media },
-				},
-				cell:New "Frame" {
+				}),
+				cell:New("Frame")({
 					LayoutOrder = 2,
 					BackgroundTransparency = 1,
 					Size = UDim2.new(0.58, -14, 0, 0),
 					AutomaticSize = Enum.AutomaticSize.Y,
 					[Children] = { UI.list(cell, {}), details },
-				},
+				}),
 			}
 		end)
 
 		return {
-			inner:New "Frame" {
+			inner:New("Frame")({
 				Name = "Top",
 				LayoutOrder = 1,
 				BackgroundTransparency = 1,
 				Size = UDim2.fromScale(1, 0),
 				AutomaticSize = Enum.AutomaticSize.Y,
 				[Children] = top,
-			},
-			inner:New "Frame" {
+			}),
+			inner:New("Frame")({
 				Name = "Related",
 				LayoutOrder = 2,
 				BackgroundTransparency = 1,
@@ -205,7 +215,7 @@ return function(ctx, scope, params)
 					SectionHeader(ctx, inner, { Title = "You might also like" }),
 					ProductGrid(ctx, inner, { Items = related }),
 				},
-			},
+			}),
 		}
 	end
 
@@ -221,4 +231,3 @@ return function(ctx, scope, params)
 		}),
 	})
 end
-

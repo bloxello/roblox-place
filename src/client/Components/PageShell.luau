@@ -6,7 +6,7 @@ local Children, Out = Fusion.Children, Fusion.Out
 return function(ctx, scope, props)
 	local shown = UI.appear(scope)
 	local info = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-	return scope:New "CanvasGroup" {
+	return scope:New("CanvasGroup")({
 		Name = props.Name or "Page",
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 1),
@@ -23,5 +23,5 @@ return function(ctx, scope, props)
 			info
 		),
 		[Children] = props.Children,
-	}
+	})
 end

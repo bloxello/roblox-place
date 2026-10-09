@@ -30,10 +30,14 @@ function ApiClient.getImage(kind: string, id: string?)
 			Method = "GET",
 		})
 	end)
-	if not ok or not response.Success then return nil end
+	if not ok or not response.Success then
+		return nil
+	end
 	local width = tonumber(response.Headers["x-image-width"])
 	local height = tonumber(response.Headers["x-image-height"])
-	if not width or not height or #response.Body ~= width * height * 4 then return nil end
+	if not width or not height or #response.Body ~= width * height * 4 then
+		return nil
+	end
 	return buffer.fromstring(response.Body), width, height
 end
 
@@ -95,4 +99,3 @@ function ApiClient.reportConnection()
 end
 
 return ApiClient
-

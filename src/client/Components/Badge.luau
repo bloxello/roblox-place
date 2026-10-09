@@ -7,12 +7,13 @@ local Children = Fusion.Children
 return function(ctx, scope, props)
 	local theme = ctx.theme
 	local kind = props.Kind or "neutral"
-	local tone = if kind == "accent" then theme.accent
+	local tone = if kind == "accent"
+		then theme.accent
 		elseif kind == "success" then theme.success
 		elseif kind == "warning" then theme.warning
 		elseif kind == "danger" then theme.danger
 		else theme.textMuted
-	return scope:New "TextLabel" {
+	return scope:New("TextLabel")({
 		Name = props.Name or "Badge",
 		BackgroundColor3 = theme.bg:Lerp(tone, 0.18),
 		BorderSizePixel = 0,
@@ -27,5 +28,5 @@ return function(ctx, scope, props)
 		AnchorPoint = props.AnchorPoint,
 		ZIndex = props.ZIndex,
 		[Children] = { UI.corner(scope, Theme.radius.full), UI.padding(scope, 0, 9) },
-	}
+	})
 end

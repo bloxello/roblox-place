@@ -24,7 +24,9 @@ BrowseState.bands = {
 
 local function bandFor(id: string)
 	for _, band in BrowseState.bands do
-		if band.id == id then return band end
+		if band.id == id then
+			return band
+		end
 	end
 	return BrowseState.bands[1]
 end
@@ -64,11 +66,21 @@ function BrowseState.new(scope, catalog, prices)
 			return livePrices[entry.id] or entry.robux
 		end
 		table.sort(list, function(a, b)
-			if mode == "popular" and a.popularity ~= b.popularity then return a.popularity > b.popularity end
-			if mode == "newest" and a.createdAt ~= b.createdAt then return a.createdAt > b.createdAt end
-			if mode == "priceAsc" and priceOf(a) ~= priceOf(b) then return priceOf(a) < priceOf(b) end
-			if mode == "priceDesc" and priceOf(a) ~= priceOf(b) then return priceOf(a) > priceOf(b) end
-			if mode == "name" and a.name ~= b.name then return string.lower(a.name) < string.lower(b.name) end
+			if mode == "popular" and a.popularity ~= b.popularity then
+				return a.popularity > b.popularity
+			end
+			if mode == "newest" and a.createdAt ~= b.createdAt then
+				return a.createdAt > b.createdAt
+			end
+			if mode == "priceAsc" and priceOf(a) ~= priceOf(b) then
+				return priceOf(a) < priceOf(b)
+			end
+			if mode == "priceDesc" and priceOf(a) ~= priceOf(b) then
+				return priceOf(a) > priceOf(b)
+			end
+			if mode == "name" and a.name ~= b.name then
+				return string.lower(a.name) < string.lower(b.name)
+			end
 			return a.order < b.order
 		end)
 		return list
@@ -94,7 +106,9 @@ function BrowseState.new(scope, catalog, prices)
 		return scopeForState:Computed(function(use)
 			local current = use(sort)
 			for _, option in BrowseState.sorts do
-				if option.id == current then return option.label end
+				if option.id == current then
+					return option.label
+				end
 			end
 			return "Featured"
 		end)
@@ -117,4 +131,3 @@ function BrowseState.new(scope, catalog, prices)
 end
 
 return BrowseState
-

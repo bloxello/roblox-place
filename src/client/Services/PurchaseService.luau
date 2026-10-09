@@ -30,7 +30,9 @@ function PurchaseService.new(scope, deps)
 			toasts.push("info", "You already own this item.")
 			return
 		end
-		if peek(pending)[entry.id] then return end
+		if peek(pending)[entry.id] then
+			return
+		end
 		setPending(entry.id, true)
 		local ok = pcall(function()
 			if entry.kind == "pass" then
@@ -46,7 +48,9 @@ function PurchaseService.new(scope, deps)
 	end
 
 	local function finished(entry, purchased: boolean)
-		if not entry then return end
+		if not entry then
+			return
+		end
 		setPending(entry.id, nil)
 		if purchased then
 			toasts.push("success", `Purchased {entry.name}! Find it under "My items".`, 6)
@@ -57,11 +61,15 @@ function PurchaseService.new(scope, deps)
 	table.insert(
 		scope,
 		MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
-			if player ~= localPlayer then return end
+			if player ~= localPlayer then
+				return
+			end
 			local entry = catalog.findByAsset("pass", passId)
 			if purchased then
 				remotes.ReportGamePass:FireServer(passId)
-				if entry then prices.markOwned(entry) end
+				if entry then
+					prices.markOwned(entry)
+				end
 			end
 			finished(entry, purchased)
 		end)
@@ -69,7 +77,9 @@ function PurchaseService.new(scope, deps)
 	table.insert(
 		scope,
 		MarketplaceService.PromptProductPurchaseFinished:Connect(function(userId, productId, purchased)
-			if userId ~= localPlayer.UserId then return end
+			if userId ~= localPlayer.UserId then
+				return
+			end
 			finished(catalog.findByAsset("product", productId), purchased)
 		end)
 	)

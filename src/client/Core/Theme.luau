@@ -29,14 +29,17 @@ Theme.text = {
 
 Theme.radius = { sm = 6, md = 10, lg = 14, xl = 20, full = 999 }
 Theme.space = { xs = 4, sm = 8, md = 12, lg = 16, xl = 24, xxl = 32 }
-Theme.layout = { sidebarWidth = 248, topBarHeight = 64, bottomNavHeight = 64, maxContent = 1200, compactBreakpoint = 760 }
+Theme.layout =
+	{ sidebarWidth = 248, topBarHeight = 64, bottomNavHeight = 64, maxContent = 1200, compactBreakpoint = 760 }
 
 local WHITE = Color3.new(1, 1, 1)
 local BLACK = Color3.new(0, 0, 0)
 
 function Theme.palette(accent: Color3)
 	-- Keep the accent readable on dark surfaces regardless of the seller's colour.
-	if Util.luminance(accent) < 0.2 then accent = accent:Lerp(WHITE, 0.4) end
+	if Util.luminance(accent) < 0.2 then
+		accent = accent:Lerp(WHITE, 0.4)
+	end
 	local bg = Color3.fromRGB(12, 13, 18)
 	return {
 		bg = bg,

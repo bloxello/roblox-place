@@ -18,7 +18,7 @@ local RemoteImage = require(Components.RemoteImage)
 local CategoryTile = require(Components.CategoryTile)
 
 local function section(ctx, scope, props)
-	return scope:New "Frame" {
+	return scope:New("Frame")({
 		Name = props.Name,
 		LayoutOrder = props.LayoutOrder,
 		BackgroundTransparency = 1,
@@ -34,14 +34,16 @@ local function section(ctx, scope, props)
 			}),
 			props.Body,
 		},
-	}
+	})
 end
 
 local function topBy(ctx, scope, field: string, limit: number)
 	return scope:Computed(function(use)
 		local list = table.clone(use(ctx.catalog.products))
 		table.sort(list, function(a, b)
-			if a[field] ~= b[field] then return a[field] > b[field] end
+			if a[field] ~= b[field] then
+				return a[field] > b[field]
+			end
 			return a.order < b.order
 		end)
 		local out = {}
@@ -62,7 +64,7 @@ return function(ctx, scope)
 		local count = inner:Computed(function(use)
 			return #use(catalog.products)
 		end)
-		local heroContent = inner:New "Frame" {
+		local heroContent = inner:New("Frame")({
 			Name = "HeroContent",
 			BackgroundTransparency = 1,
 			Size = UDim2.fromScale(1, 0),
@@ -99,13 +101,16 @@ return function(ctx, scope)
 					Transparency = 0.15,
 					Wrap = true,
 				}),
-				inner:New "Frame" {
+				inner:New("Frame")({
 					LayoutOrder = 4,
 					BackgroundTransparency = 1,
 					Size = UDim2.fromScale(1, 0),
 					AutomaticSize = Enum.AutomaticSize.Y,
 					[Children] = {
-						UI.list(inner, { Direction = "Horizontal", Gap = 10, Wrap = true, VAlign = Enum.VerticalAlignment.Center }),
+						UI.list(
+							inner,
+							{ Direction = "Horizontal", Gap = 10, Wrap = true, VAlign = Enum.VerticalAlignment.Center }
+						),
 						Button(ctx, inner, {
 							LayoutOrder = 1,
 							Text = "Browse all items",
@@ -131,10 +136,10 @@ return function(ctx, scope)
 							Label = "Categories",
 						}),
 					},
-				},
+				}),
 			},
-		}
-		local hero = inner:New "Frame" {
+		})
+		local hero = inner:New("Frame")({
 			Name = "Hero",
 			LayoutOrder = 1,
 			BackgroundColor3 = theme.accent,
@@ -148,7 +153,7 @@ return function(ctx, scope)
 				RemoteImage(ctx, inner, { Name = "Banner", Content = ctx.banner, Opacity = 0.35, ZIndex = 1 }),
 				heroContent,
 			},
-		}
+		})
 
 		local categories = section(ctx, inner, {
 			Name = "Categories",
@@ -219,4 +224,3 @@ return function(ctx, scope)
 		}),
 	})
 end
-
