@@ -53,7 +53,7 @@ function UI.gradient(scope, from: Color3, to: Color3, rotation: number?)
 end
 
 function UI.aspect(scope, ratio: number)
-	return scope:New("UIAspectRatio")({ AspectRatio = ratio })
+	return scope:New("UIAspectRatioConstraint")({ AspectRatio = ratio })
 end
 
 function UI.maxWidth(scope, width: number)
