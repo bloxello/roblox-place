@@ -1,0 +1,20 @@
+-- Glyphs live in one place so they can be swapped for image assets later.
+return {
+	back = "\u{2039}",
+	close = "\u{2715}",
+	heart = "\u{2665}",
+	heartOutline = "\u{2661}",
+	star = "\u{2605}",
+	search = "\u{2315}",
+	home = "\u{2302}",
+	browse = "\u{25A6}",
+	check = "\u{2713}",
+	info = "i",
+	warning = "!",
+	robux = "\u{E002}",
+	chevronDown = "\u{25BE}",
+	bag = "\u{25C8}",
+	ellipsis = "\u{2026}",
+	dash = "\u{2013}",
+	dot = "\u{2022}",
+}

@@ -6,11 +6,32 @@ export type PurchaseMapping = {
 	universeId: string,
 }
 
-export type Product =
-	{ id: string, name: string, summary: string, thumbnailUrl: string?, categories: { { category: { name: string, slug: string } } }?, mappings: { PurchaseMapping } }
+export type Category = { name: string, slug: string }
+
+export type Product = {
+	id: string,
+	name: string,
+	summary: string,
+	description: string?,
+	thumbnailUrl: string?,
+	hasImage: boolean?,
+	createdAt: string?,
+	_count: { favorites: number }?,
+	categories: { { category: Category } }?,
+	mappings: { PurchaseMapping },
+}
 
 export type Catalog = {
-	store: { id: string, name: string, slug: string, accentColor: string, products: { Product } },
+	store: {
+		id: string,
+		name: string,
+		slug: string,
+		description: string?,
+		accentColor: string,
+		logoUrl: string?,
+		bannerUrl: string?,
+		products: { Product },
+	},
 }
 
 return {}

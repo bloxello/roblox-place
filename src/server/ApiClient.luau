@@ -21,6 +21,22 @@ function ApiClient.getCatalog()
 	return body, nil
 end
 
+-- Returns raw RGBA pixels (cover-cropped by the API) as a buffer plus its dimensions.
+function ApiClient.getImage(kind: string, id: string?)
+	local suffix = if id then `/{HttpService:UrlEncode(id)}` else ""
+	local ok, response = pcall(function()
+		return HttpService:RequestAsync({
+			Url = `{Config.ApiBaseUrl}/roblox/stores/{Config.StoreId}/image/{kind}{suffix}`,
+			Method = "GET",
+		})
+	end)
+	if not ok or not response.Success then return nil end
+	local width = tonumber(response.Headers["x-image-width"])
+	local height = tonumber(response.Headers["x-image-height"])
+	if not width or not height or #response.Body ~= width * height * 4 then return nil end
+	return buffer.fromstring(response.Body), width, height
+end
+
 function ApiClient.reportReceipt(payload)
 	local ok, response = pcall(function()
 		return HttpService:RequestAsync({

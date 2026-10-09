@@ -5,9 +5,14 @@ registry = "test"
 [[package]]
 name = "bloxello/hub"
 version = "0.1.0"
-dependencies = [["Fusion", "elttob/fusion@0.3.0"]]
+dependencies = [["Fusion", "elttob/fusion@0.3.0"], ["Promise", "evaera/promise@4.0.0"]]
 
 [[package]]
 name = "elttob/fusion"
 version = "0.3.0"
+dependencies = []
+
+[[package]]
+name = "evaera/promise"
+version = "4.0.0"
 dependencies = []
