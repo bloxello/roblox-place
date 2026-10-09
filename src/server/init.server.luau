@@ -66,8 +66,15 @@ DeliveryService.start()
 WishlistService.start()
 PurchaseService.start()
 task.spawn(function()
-	if game.PlaceId > 0 then
-		ApiClient.reportConnection()
+	if game.PlaceId == 0 then
+		warn("[Bloxello] Unpublished place (Studio test): reporting runs, but Robux buy links need a published place or a manual Place ID in the dashboard.")
+	end
+	for attempt = 1, 5 do
+		if ApiClient.reportConnection() then
+			print("[Bloxello] Hub connected to Bloxello")
+			return
+		end
+		task.wait(5 * attempt)
 	end
 end)
 task.spawn(function()

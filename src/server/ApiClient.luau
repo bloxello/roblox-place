@@ -95,7 +95,15 @@ function ApiClient.reportConnection()
 			}),
 		})
 	end)
-	return ok and response.Success
+	if not ok then
+		warn(`[Bloxello] Could not reach the API (enable HTTP requests in Game Settings > Security): {response}`)
+		return false
+	end
+	if not response.Success then
+		warn(`[Bloxello] Hub connect failed ({response.StatusCode}): {response.Body}`)
+		return false
+	end
+	return true
 end
 
 return ApiClient
