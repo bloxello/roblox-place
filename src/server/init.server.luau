@@ -14,6 +14,7 @@ local DeliveryService = require(script.DeliveryService)
 local ApiClient = require(script.ApiClient)
 local ImageService = require(script.ImageService)
 local StoreView = require(script.StoreView)
+local SupportService = require(script.SupportService)
 
 local remotes = Instance.new("Folder")
 remotes.Name = "BloxelloRemotes"
@@ -69,6 +70,27 @@ getImage.Name = "GetImage"
 getImage.Parent = remotes
 getImage.OnServerInvoke = function(player, kind, id, index)
 	return ImageService.get(player, kind, id, index)
+end
+
+local getSupportTickets = Instance.new("RemoteFunction")
+getSupportTickets.Name = "GetSupportTickets"
+getSupportTickets.Parent = remotes
+getSupportTickets.OnServerInvoke = function(player)
+	return SupportService.list(player)
+end
+
+local createSupportTicket = Instance.new("RemoteFunction")
+createSupportTicket.Name = "CreateSupportTicket"
+createSupportTicket.Parent = remotes
+createSupportTicket.OnServerInvoke = function(player, subject, message)
+	return SupportService.create(player, subject, message)
+end
+
+local replySupportTicket = Instance.new("RemoteFunction")
+replySupportTicket.Name = "ReplySupportTicket"
+replySupportTicket.Parent = remotes
+replySupportTicket.OnServerInvoke = function(player, ticketId, message)
+	return SupportService.reply(player, ticketId, message)
 end
 
 StoreView.start()

@@ -126,4 +126,50 @@ function ApiClient.reportConnection()
 	return true
 end
 
+local function supportRequest(method: string, path: string, payload)
+	local ok, response = pcall(function()
+		return HttpService:RequestAsync({
+			Url = `{Config.ApiBaseUrl}/roblox/support{path}`,
+			Method = method,
+			Headers = {
+				["Accept"] = "application/json",
+				["Content-Type"] = "application/json",
+				["Authorization"] = `Bearer {Config.HubApiKey}`,
+				["X-Bloxello-Store-Id"] = Config.StoreId,
+			},
+			Body = if payload then HttpService:JSONEncode(payload) else nil,
+		})
+	end)
+	if not ok or not response.Success then
+		return nil, if ok then `Support request failed ({response.StatusCode})` else tostring(response)
+	end
+	local decodedOk, body = pcall(HttpService.JSONDecode, HttpService, response.Body)
+	if not decodedOk or type(body) ~= "table" then return nil, "Support response was invalid" end
+	return body, nil
+end
+
+function ApiClient.getSupportTickets(userId: number)
+	local body, requestError = supportRequest("GET", `/tickets/{userId}`, nil)
+	if not body or type(body.tickets) ~= "table" then return nil, requestError or "Tickets were unavailable" end
+	return body.tickets, nil
+end
+
+function ApiClient.createSupportTicket(userId: number, requesterName: string, subject: string, message: string)
+	return supportRequest("POST", "/tickets", {
+		robloxUserId = tostring(userId),
+		requesterName = requesterName,
+		subject = subject,
+		category = "PRODUCT_HELP",
+		message = message,
+	})
+end
+
+function ApiClient.replySupportTicket(userId: number, requesterName: string, ticketId: string, message: string)
+	return supportRequest("POST", `/tickets/{HttpService:UrlEncode(ticketId)}/messages`, {
+		robloxUserId = tostring(userId),
+		requesterName = requesterName,
+		message = message,
+	})
+end
+
 return ApiClient

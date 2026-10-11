@@ -38,6 +38,7 @@ local BrowseState = require(Services.BrowseState)
 local ImageService = require(Services.ImageService)
 local DeliveryService = require(Services.DeliveryService)
 local RecentService = require(Services.RecentService)
+local SupportService = require(Services.SupportService)
 
 local App = require(script.Layout.App)
 local Splash = require(script.Layout.Splash)
@@ -67,6 +68,7 @@ local splash = Splash.show(newGui("BloxelloSplash", 11))
 catalog.fetch():await()
 
 local toasts = ToastService.new(scope)
+local support = SupportService.new(scope, remotes, toasts)
 local deliveries = DeliveryService.new(scope, remotes)
 local modal = ModalService.new(scope)
 local wishlist = WishlistService.new(scope, remotes, toasts)
@@ -92,6 +94,7 @@ local ctx = {
 	browse = browse,
 	images = images,
 	recent = RecentService.new(scope),
+	support = support,
 	logo = if peek(catalog.store).hasLogo then images.of("logo") else scope:Value(Content.none),
 	banner = if peek(catalog.store).hasBanner then images.of("banner") else scope:Value(Content.none),
 }
@@ -141,6 +144,7 @@ if peek(catalog.status) == "ready" then
 	prices.load(peek(catalog.products))
 	wishlist.load()
 	deliveries.refresh()
+	support.refresh()
 end
 
 task.spawn(splash.finish)
