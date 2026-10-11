@@ -126,6 +126,27 @@ function ApiClient.reportConnection()
 	return true
 end
 
+function ApiClient.reportHubPlay(userId: number, sessionId: string)
+	local ok, response = pcall(function()
+		return HttpService:RequestAsync({
+			Url = `{Config.ApiBaseUrl}/roblox/analytics/play`,
+			Method = "POST",
+			Headers = {
+				["Content-Type"] = "application/json",
+				["Authorization"] = `Bearer {Config.HubApiKey}`,
+				["X-Bloxello-Store-Id"] = Config.StoreId,
+			},
+			Body = HttpService:JSONEncode({
+				robloxUserId = tostring(userId),
+				sessionId = sessionId,
+				placeId = tostring(game.PlaceId),
+				universeId = tostring(game.GameId),
+			}),
+		})
+	end)
+	return ok and response.Success
+end
+
 local function supportRequest(method: string, path: string, payload)
 	local ok, response = pcall(function()
 		return HttpService:RequestAsync({

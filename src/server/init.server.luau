@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
 
 -- UI-only hub: there is no world, so a spawned character would fall into the void and respawn forever.
 Players.CharacterAutoLoads = false
@@ -15,6 +16,7 @@ local ApiClient = require(script.ApiClient)
 local ImageService = require(script.ImageService)
 local StoreView = require(script.StoreView)
 local SupportService = require(script.SupportService)
+local analyticsSessionId = if game.JobId ~= "" then game.JobId else HttpService:GenerateGUID(false)
 
 local remotes = Instance.new("Folder")
 remotes.Name = "BloxelloRemotes"
@@ -111,6 +113,18 @@ task.spawn(function()
 		task.wait(5 * attempt)
 	end
 end)
+local function reportHubPlay(player)
+	task.spawn(function()
+		for attempt = 1, 3 do
+			if ApiClient.reportHubPlay(player.UserId, analyticsSessionId) then return end
+			task.wait(attempt * 3)
+		end
+	end)
+end
+Players.PlayerAdded:Connect(reportHubPlay)
+for _, player in Players:GetPlayers() do
+	reportHubPlay(player)
+end
 task.spawn(function()
 	while task.wait(120) do
 		CatalogService.refresh()
