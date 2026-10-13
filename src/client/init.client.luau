@@ -78,7 +78,7 @@ local router = Router.new(scope, "Home")
 local images = ImageService.new(scope, remotes)
 
 local viewport = scope:Value(workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720))
-local accent = Util.hexToColor(peek(catalog.store).accentHex, Color3.fromRGB(88, 101, 242))
+local accent = Util.hexToColor(peek(catalog.store).accentHex, Color3.fromRGB(22, 139, 255))
 
 local ctx = {
 	theme = Theme.palette(accent),
