@@ -99,6 +99,24 @@ function ApiClient.reportReceipt(payload)
 	return decodedOk and body.accepted == true, if decodedOk then body else "Invalid receipt response"
 end
 
+function ApiClient.redeemDiscount(userId: number, productId: string, code: string)
+	local ok, response = pcall(function()
+		return HttpService:RequestAsync({
+			Url = `{Config.ApiBaseUrl}/roblox/discounts/redeem`,
+			Method = "POST",
+			Headers = { ["Accept"] = "application/json", ["Content-Type"] = "application/json", ["Authorization"] = `Bearer {Config.HubApiKey}`, ["X-Bloxello-Store-Id"] = Config.StoreId },
+			Body = HttpService:JSONEncode({ robloxUserId = tostring(userId), productId = productId, code = code }),
+		})
+	end)
+	if not ok then return nil, "Bloxello could not be reached." end
+	local decodedOk, body = pcall(HttpService.JSONDecode, HttpService, response.Body)
+	if not response.Success then
+		return nil, if decodedOk and body.error and body.error.message then body.error.message else "That discount code could not be applied."
+	end
+	if not decodedOk or type(body.assetId) ~= "string" or type(body.price) ~= "number" then return nil, "The discounted purchase response was invalid." end
+	return body, nil
+end
+
 function ApiClient.reportConnection()
 	local ok, response = pcall(function()
 		return HttpService:RequestAsync({

@@ -46,6 +46,13 @@ reportGamePass.OnServerEvent:Connect(function(player, gamePassId)
 	end
 	PurchaseService.processGamePass(player, gamePassId)
 end)
+local redeemDiscount = Instance.new("RemoteFunction")
+redeemDiscount.Name = "RedeemDiscount"
+redeemDiscount.Parent = remotes
+redeemDiscount.OnServerInvoke = function(player, productId, code)
+	if type(productId) ~= "string" or type(code) ~= "string" or #code < 2 or #code > 50 then return nil, "Enter a valid discount code." end
+	return ApiClient.redeemDiscount(player.UserId, productId, string.upper(code))
+end
 
 local getWishlist = Instance.new("RemoteFunction")
 getWishlist.Name = "GetWishlist"

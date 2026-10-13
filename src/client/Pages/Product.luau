@@ -1,9 +1,10 @@
 local Core = script.Parent.Parent.Core
 local Fusion = require(Core.Fusion)
+local Theme = require(Core.Theme)
 local Icons = require(Core.Icons)
 local UI = require(Core.UI)
 local Util = require(Core.Util)
-local Children = Fusion.Children
+local Children, OnChange = Fusion.Children, Fusion.OnChange
 local Components = script.Parent.Parent.Components
 local Label = require(Components.Label)
 local Panel = require(Components.Panel)
@@ -54,6 +55,7 @@ return function(ctx, scope, params)
 		end
 
 		local price = ctx.prices.priceOf(inner, product)
+		local discountCode = inner:Value("")
 		ctx.recent.add(product.id)
 
 		-- Description and reviews are filtered by the server and fetched separately from the catalog.
@@ -170,8 +172,17 @@ return function(ctx, scope, params)
 						),
 					},
 				}),
-				infoPanel(ctx, inner, 6, "About this item", { description }),
-								infoPanel(ctx, inner, 7, "Details", {
+				Panel(ctx, inner, {
+					LayoutOrder = 6,
+					Padding = 12,
+					Children = {
+						UI.list(inner, { Direction = "Horizontal", Gap = 8, VAlign = Enum.VerticalAlignment.Center }),
+						inner:New("TextBox")({ LayoutOrder = 1, BackgroundColor3 = theme.surfaceHigh, BorderSizePixel = 0, Size = UDim2.new(1, -105, 0, 38), ClearTextOnFocus = false, Text = discountCode, PlaceholderText = "Discount code", PlaceholderColor3 = theme.textFaint, TextColor3 = theme.text, FontFace = Theme.fonts.medium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, [OnChange("Text")] = function(text) discountCode:set(text) end, [Children] = { UI.corner(inner, Theme.radius.md), UI.padding(inner, 0, 12) } }),
+						Button(ctx, inner, { LayoutOrder = 2, Text = "Apply", Width = 88, Variant = "secondary", OnClick = function() ctx.purchase.buyWithDiscount(product, Fusion.peek(discountCode)) end }),
+					},
+				}),
+				infoPanel(ctx, inner, 7, "About this item", { description }),
+								infoPanel(ctx, inner, 8, "Details", {
 					InfoRow(ctx, inner, {
 						LayoutOrder = 1,
 						Label = "Type",
@@ -184,7 +195,7 @@ return function(ctx, scope, params)
 						Value = `{Util.compact(product.popularity)} {Util.plural(product.popularity, "player")}`,
 					}),
 				}),
-				infoPanel(ctx, inner, 8, "How delivery works", {
+				infoPanel(ctx, inner, 9, "How delivery works", {
 					Label(ctx, inner, {
 						LayoutOrder = 1,
 						Text = "Items are Roblox developer assets (game passes and developer products) from creators. Checkout happens in Roblox's official purchase prompt, paid with your own Robux. Everything you buy is listed under My items, right here in the experience. Bloxello never asks for your password or sells Robux.",

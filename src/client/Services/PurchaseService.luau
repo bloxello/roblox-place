@@ -11,6 +11,7 @@ function PurchaseService.new(scope, deps)
 	local catalog, prices, toasts, remotes, deliveries = deps.catalog, deps.prices, deps.toasts, deps.remotes, deps.deliveries
 	local localPlayer = Players.LocalPlayer
 	local pending = scope:Value({})
+	local discountedAssets = {}
 	local self = { pending = pending }
 
 	local function setPending(id: string, value: boolean?)
@@ -47,6 +48,23 @@ function PurchaseService.new(scope, deps)
 		end
 	end
 
+	function self.buyWithDiscount(entry, code: string)
+		if entry.kind ~= "product" then toasts.push("error", "Discount codes require a Developer Product listing.") return end
+		if string.match(code, "^%s*$") then toasts.push("error", "Enter a discount code first.") return end
+		if peek(pending)[entry.id] then return end
+		setPending(entry.id, true)
+		task.spawn(function()
+			local result, message = remotes.RedeemDiscount:InvokeServer(entry.id, code)
+			if not result then setPending(entry.id, nil) toasts.push("error", message or "That discount code could not be applied.") return end
+			local assetId = tonumber(result.assetId)
+			if not assetId then setPending(entry.id, nil) toasts.push("error", "The discounted product is unavailable.") return end
+			discountedAssets[assetId] = entry
+			toasts.push("success", `Discount applied: {result.price} Robux`, 5)
+			local ok = pcall(MarketplaceService.PromptProductPurchase, MarketplaceService, localPlayer, assetId)
+			if not ok then setPending(entry.id, nil) toasts.push("error", "Roblox couldn't open the purchase prompt. Try again.") end
+		end)
+	end
+
 	local function finished(entry, purchased: boolean)
 		if not entry then
 			return
@@ -80,7 +98,9 @@ function PurchaseService.new(scope, deps)
 			if userId ~= localPlayer.UserId then
 				return
 			end
-			finished(catalog.findByAsset("product", productId), purchased)
+			local entry = discountedAssets[productId] or catalog.findByAsset("product", productId)
+			discountedAssets[productId] = nil
+			finished(entry, purchased)
 		end)
 	)
 
